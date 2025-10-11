@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIEnablr - AI for your business, powered by your APIs</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<header class="navbar">
+    <div class="container">
+        <div class="logo">
+            <a href="#">
+                <img src="logowithoutTagline.png" alt="AIEnablr Logo">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#how-it-works">How it Works</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#use-cases">Use Cases</a></li>
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="contact.html">Pricing</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+        <a href="contact.html" class="cta-button nav-cta">Request a Demo</a>
+    </div>
+</header>
+
+<main>
+    <section id="hero" class="hero-section">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Give Your APIs a Voice. Instantly.</h1>
+                <p class="sub-headline">Unlock the power of your existing APIs by seamlessly integrating AI-powered natural language interfaces.</p>
+                <div class="hero-ctas">
+                    <a href="contact.html" class="cta-button primary">Request a Demo</a>
+                    <button class="cta-button secondary">Learn More</button>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="animation-placeholder">
+                    <img src="VideoImg.png" alt="AIEnablr Product Demo">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="how-it-works" class="how-it-works-section">
+        <div class="container">
+            <h2>How It Works</h2>
+            <p class="section-subtitle">A simple, three-step process to integrate AI into your business.</p>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <span class="timeline-step">1</span>
+                        <h3>Connect Your API</h3>
+                        <p>Register your existing REST, GraphQL, or gRPC APIs with our secure platform using an OpenAPI spec or manual configuration.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <span class="timeline-step">2</span>
+                        <h3>Generate Your MCP</h3>
+                        <p>Our platform automatically generates a dedicated and isolated Multi-Copilot Proxy (MCP) server for your specific API.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <span class="timeline-step">3</span>
+                        <h3>Embed the Widget</h3>
+                        <p>Embed our customizable chat or audio widget into your website or application to provide a natural language interface for your users.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="features-section">
+        <div class="container">
+            <h2>Key Features</h2>
+            <p class="section-subtitle">Everything you need to unlock the power of your APIs.</p>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-comments"></i></div>
+                    <h3>AI-Powered Interaction</h3>
+                    <p>End-users can interact with your system using natural text or voice commands, routed intelligently to the correct API.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3>Secure Multi-Tenant Architecture</h3>
+                    <p>Dedicated, isolated environments for each customer with JWT-based authentication and Role-Based Access Control (RBAC).</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-tachometer-alt"></i></div>
+                    <h3>Powerful Admin Dashboard</h3>
+                    <p>A modern, intuitive web interface to manage users, generate and deploy MCP servers, and monitor API usage.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-project-diagram"></i></div>
+                    <h3>Seamless API Integration</h3>
+                    <p>Automatically generate MCP servers from OpenAPI specifications. Compatible with REST, GraphQL, and gRPC APIs.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-check-circle"></i></div>
+                    <h3>Standardization & Compliance</h3>
+                    <p>Adherence to standards like ONNX, GDPR, HIPAA, and SOC 2, with a commitment to ethical AI.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-palette"></i></div>
+                    <h3>Customizable Widget</h3>
+                    <p>Easily customize the look and feel of the frontend widget to match your brand identity.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="use-cases" class="use-cases-section">
+        <div class="container">
+            <h2>Who is it for?</h2>
+            <p class="section-subtitle">AIEnablr is perfect for a wide range of businesses and roles.</p>
+            <div class="use-case-tabs">
+                <button class="tab-link active" onclick="openTab(event, 'saas')">SaaS Platforms</button>
+                <button class="tab-link" onclick="openTab(event, 'ecommerce')">E-commerce</button>
+                <button class="tab-link" onclick="openTab(event, 'product-managers')">Product Managers</button>
+            </div>
+            <div class="tab-content-wrapper">
+                <div id="saas" class="tab-content" style="display:block;">
+                    <h3>For SaaS Platforms</h3>
+                    <p>Add powerful AI capabilities to your existing software product without a complete overhaul. Allow your users to perform complex actions using natural language, increasing user engagement and retention.</p>
+                </div>
+                <div id="ecommerce" class="tab-content">
+                    <h3>For E-commerce</h3>
+                    <p>Enable customers to search for products, track orders, or get support through a conversational interface, reducing the load on your customer service team and improving the shopping experience.</p>
+                </div>
+                <div id="product-managers" class="tab-content">
+                    <h3>For Product Managers & CTOs</h3>
+                    <p>Rapidly prototype and deploy AI-powered features. Innovate faster, enhance your product offerings, and stay ahead of the competition without needing a large, specialized AI team.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="dashboard" class="dashboard-section">
+        <div class="container">
+            <h2>The Control Center for Your AI</h2>
+            <p class="section-subtitle">Our revamped admin dashboard gives you complete control over your AI integration.</p>
+            <div class="dashboard-showcase">
+                <p style="text-align: center; padding: 5rem; border: 2px dashed #ccc;">[Screenshot of the new Admin Dashboard will be here]</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="pricing-section">
+        <div class="container">
+            <h2>Simple, Transparent Pricing</h2>
+            <p class="section-subtitle">Choose the plan that's right for your business.</p>
+            <div class="pricing-tiers">
+                <div class="tier">
+                    <h3>Starter</h3>
+                    <div class="price">Contact Us</div>
+                    <ul>
+                        <li><i class="fas fa-check"></i> 1 API Integration</li>
+                        <li><i class="fas fa-check"></i> 1,000 API calls/month</li>
+                        <li><i class="fas fa-check"></i> Community Support</li>
+                    </ul>
+                    <button class="cta-button">Get Started</button>
+                </div>
+                <div class="tier recommended">
+                    <h3>Business</h3>
+                    <div class="price">Contact Us</div>
+                    <ul>
+                        <li><i class="fas fa-check"></i> 5 API Integrations</li>
+                        <li><i class="fas fa-check"></i> 10,000 API calls/month</li>
+                        <li><i class="fas fa-check"></i> Dedicated Support</li>
+                        <li><i class="fas fa-check"></i> Advanced Analytics</li>
+                    </ul>
+                    <a href="contact.html" class="cta-button primary">Request a Demo</a>
+                </div>
+                <div class="tier">
+                    <h3>Enterprise</h3>
+                    <div class="price">Contact Us</div>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Unlimited API Integrations</li>
+                        <li><i class="fas fa-check"></i> Custom API call limits</li>
+                        <li><i class="fas fa-check"></i> 24/7 Premium Support</li>
+                        <li><i class="fas fa-check"></i> On-premise deployment</li>
+                    </ul>
+                    <button class="cta-button" style="display: none;">Contact Sales</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact-cta-section">
+        <div class="container">
+            <h2>Ready to Give Your APIs a Voice?</h2>
+            <p>Request a personalized demo and see how AIEnablr can transform your business.</p>
+            <a href="contact.html" class="cta-button primary">Request a Demo</a>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2025 AIEnablr. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+function openTab(evt, tabName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tab-content");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tab-link");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(tabName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+</script>
+<script src="script.js"></script>
+</body>
+</html>
