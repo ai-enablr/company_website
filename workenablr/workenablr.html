@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkEnablr — Operational Intelligence for Scaling Teams</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #080a0f;
+    --surface: #0d1017;
+    --border: #1a2030;
+    --accent: #00e5a0;
+    --accent2: #0066ff;
+    --text: #e8edf5;
+    --muted: #4a5568;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  .cursor {
+    position: fixed; width: 10px; height: 10px;
+    background: var(--accent); border-radius: 50%;
+    pointer-events: none; z-index: 9999;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    position: fixed; width: 36px; height: 36px;
+    border: 1px solid rgba(0,229,160,0.4); border-radius: 50%;
+    pointer-events: none; z-index: 9998;
+    transform: translate(-50%, -50%);
+  }
+
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,160,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,160,0.03) 1px, transparent 1px);
+    background-size: 64px 64px;
+    pointer-events: none; z-index: 0;
+  }
+
+  .blob { position: fixed; border-radius: 50%; filter: blur(120px); opacity: 0.12; pointer-events: none; z-index: 0; }
+  .blob-1 { width: 600px; height: 600px; background: var(--accent); top: -200px; right: -100px; }
+  .blob-2 { width: 400px; height: 400px; background: var(--accent2); bottom: 0; left: -100px; }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 24px 48px;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  nav.scrolled { background: rgba(8,10,15,0.9); backdrop-filter: blur(20px); border-color: var(--border); }
+
+  .logo { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; display: flex; align-items: center; gap: 10px; }
+  .logo-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0,229,160,0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(0,229,160,0); }
+  }
+
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--muted); text-decoration: none; letter-spacing: 0.05em; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-cta { font-family: 'DM Mono', monospace; font-size: 13px; padding: 10px 22px; border: 1px solid var(--accent); color: var(--accent); background: transparent; cursor: none; letter-spacing: 0.05em; transition: background 0.2s, color 0.2s; }
+  .nav-cta:hover { background: var(--accent); color: var(--bg); }
+
+  .hero {
+    position: relative; min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 120px 48px 80px; z-index: 1; max-width: 1100px;
+  }
+
+  .hero-label {
+    font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.2em;
+    color: var(--accent); text-transform: uppercase; margin-bottom: 32px;
+    display: flex; align-items: center; gap: 12px;
+    opacity: 0; animation: fadeUp 0.8s 0.2s forwards;
+  }
+  .hero-label::before { content: ''; display: inline-block; width: 32px; height: 1px; background: var(--accent); }
+
+  h1 { font-size: clamp(52px, 7vw, 108px); font-weight: 800; line-height: 0.92; letter-spacing: -0.03em; max-width: 860px; opacity: 0; animation: fadeUp 0.8s 0.4s forwards; }
+  h1 span { color: var(--accent); }
+
+  .hero-sub { margin-top: 40px; font-family: 'DM Mono', monospace; font-size: 15px; line-height: 1.8; color: var(--muted); max-width: 520px; opacity: 0; animation: fadeUp 0.8s 0.6s forwards; }
+
+  .hero-actions { margin-top: 56px; display: flex; align-items: center; gap: 24px; opacity: 0; animation: fadeUp 0.8s 0.8s forwards; }
+
+  .btn-primary { display: inline-flex; align-items: center; gap: 10px; padding: 16px 32px; background: var(--accent); color: var(--bg); font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 500; letter-spacing: 0.05em; text-decoration: none; cursor: none; transition: transform 0.2s, box-shadow 0.2s; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,229,160,0.3); }
+  .btn-primary svg { width: 16px; }
+
+  .btn-ghost { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--muted); text-decoration: none; cursor: none; letter-spacing: 0.05em; display: flex; align-items: center; gap: 8px; transition: color 0.2s; }
+  .btn-ghost:hover { color: var(--text); }
+
+  .insight-card {
+    position: absolute; right: 48px; top: 50%; transform: translateY(-50%);
+    width: 420px; background: var(--surface); border: 1px solid var(--border);
+    font-family: 'DM Mono', monospace; font-size: 13px;
+    opacity: 0; animation: fadeUp 1s 1s forwards;
+  }
+  .card-header { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .card-title { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+  .card-badge { font-size: 10px; padding: 3px 8px; background: rgba(0,229,160,0.1); color: var(--accent); letter-spacing: 0.1em; }
+  .card-body { padding: 20px 18px; display: flex; flex-direction: column; gap: 14px; }
+  .insight-row { display: flex; align-items: flex-start; gap: 12px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+  .insight-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .insight-icon { font-size: 16px; margin-top: 1px; flex-shrink: 0; }
+  .insight-text { color: var(--text); font-size: 12px; line-height: 1.6; }
+  .insight-text strong { color: var(--accent); font-weight: 500; }
+  .insight-meta { color: var(--muted); font-size: 11px; margin-top: 3px; }
+  .card-footer { padding: 12px 18px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 11px; letter-spacing: 0.08em; }
+  .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+
+  .marquee-wrap { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); overflow: hidden; padding: 18px 0; background: var(--surface); position: relative; z-index: 1; }
+  .marquee-track { display: flex; gap: 64px; width: max-content; animation: marquee 28s linear infinite; }
+  .marquee-item { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 16px; white-space: nowrap; }
+  .marquee-item::after { content: '◆'; color: var(--accent); font-size: 8px; }
+  @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+  .stats-bar { position: relative; z-index: 1; border-bottom: 1px solid var(--border); display: grid; grid-template-columns: repeat(4, 1fr); opacity: 0; animation: fadeUp 0.8s 1.2s forwards; }
+  .stat { padding: 36px 48px; border-right: 1px solid var(--border); }
+  .stat:last-child { border-right: none; }
+  .stat-num { font-size: 40px; font-weight: 800; letter-spacing: -0.02em; }
+  .stat-num span { color: var(--accent); }
+  .stat-label { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; margin-top: 4px; }
+
+  section { position: relative; z-index: 1; padding: 120px 48px; }
+  .section-tag { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; }
+  h2 { font-size: clamp(36px, 5vw, 60px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.0; max-width: 680px; }
+  .section-desc { font-family: 'DM Mono', monospace; font-size: 14px; line-height: 1.8; color: var(--muted); max-width: 520px; margin-top: 20px; }
+
+  .problem-section { background: var(--surface); border-top: 1px solid var(--border); }
+  .problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; margin-top: 64px; align-items: start; }
+  .problem-list { display: flex; flex-direction: column; gap: 0; }
+  .problem-item { display: flex; gap: 20px; align-items: flex-start; padding: 24px 0; border-bottom: 1px solid var(--border); }
+  .problem-item:first-child { border-top: 1px solid var(--border); }
+  .p-num { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.15em; flex-shrink: 0; margin-top: 3px; }
+  .p-text { font-size: 17px; font-weight: 600; line-height: 1.4; }
+  .p-sub { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.6; }
+  .problem-right h3 { font-size: 22px; font-weight: 700; margin-bottom: 16px; line-height: 1.3; }
+  .problem-right p { font-family: 'DM Mono', monospace; font-size: 13px; line-height: 1.9; color: var(--muted); margin-bottom: 20px; }
+  .callout { padding: 20px 24px; border-left: 2px solid var(--accent); background: rgba(0,229,160,0.04); font-family: 'DM Mono', monospace; font-size: 13px; line-height: 1.8; color: var(--text); }
+
+  .features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 64px; }
+  .feature-card { background: var(--bg); padding: 48px 40px; transition: background 0.3s; position: relative; overflow: hidden; }
+  .feature-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--accent); transform: scaleX(0); transition: transform 0.3s; transform-origin: left; }
+  .feature-card:hover::before { transform: scaleX(1); }
+  .feature-card:hover { background: var(--surface); }
+  .feature-icon { width: 44px; height: 44px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; margin-bottom: 28px; font-size: 20px; }
+  .feature-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.01em; }
+  .feature-card p { font-family: 'DM Mono', monospace; font-size: 13px; line-height: 1.8; color: var(--muted); }
+
+  .integrations-section { background: var(--surface); border-top: 1px solid var(--border); }
+  .integrations-note { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--muted); margin-top: 16px; line-height: 1.7; max-width: 480px; }
+  .integrations-grid { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 56px; }
+  .integration-pill { padding: 10px 20px; border: 1px solid var(--border); font-family: 'DM Mono', monospace; font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 8px; transition: border-color 0.2s, color 0.2s; letter-spacing: 0.05em; }
+  .integration-pill:hover { border-color: var(--accent); color: var(--text); }
+  .integration-pill span { font-size: 16px; }
+
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 64px; border: 1px solid var(--border); }
+  .step { padding: 48px 36px; border-right: 1px solid var(--border); position: relative; }
+  .step:last-child { border-right: none; }
+  .step-num { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: var(--muted); margin-bottom: 20px; }
+  .step-num span { color: var(--accent); }
+  .step h3 { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
+  .step p { font-family: 'DM Mono', monospace; font-size: 12px; line-height: 1.8; color: var(--muted); }
+  .step-connector { position: absolute; top: 48px; right: -12px; width: 24px; height: 24px; background: var(--bg); border: 1px solid var(--accent); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--accent); z-index: 1; }
+  .step:last-child .step-connector { display: none; }
+
+  .values-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 64px; }
+  .value-card { background: var(--bg); padding: 40px; }
+  .value-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+  .value-card p { font-family: 'DM Mono', monospace; font-size: 13px; line-height: 1.8; color: var(--muted); }
+  .value-tag { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+
+  .cta-section { text-align: center; padding: 160px 48px; border-top: 1px solid var(--border); }
+  .cta-section h2 { max-width: 100%; margin: 16px auto 20px; font-size: clamp(40px, 5vw, 72px); }
+  .cta-section p { font-family: 'DM Mono', monospace; font-size: 14px; color: var(--muted); margin-bottom: 48px; max-width: 440px; margin-left: auto; margin-right: auto; line-height: 1.8; }
+  .cta-input-row { display: flex; justify-content: center; gap: 0; max-width: 480px; margin: 0 auto; }
+  .cta-input { flex: 1; padding: 16px 20px; background: var(--surface); border: 1px solid var(--border); border-right: none; color: var(--text); font-family: 'DM Mono', monospace; font-size: 13px; outline: none; transition: border-color 0.2s; }
+  .cta-input:focus { border-color: var(--accent); }
+  .cta-input::placeholder { color: var(--muted); }
+  .cta-submit { padding: 16px 28px; background: var(--accent); color: var(--bg); border: none; font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; letter-spacing: 0.05em; cursor: none; transition: opacity 0.2s; }
+  .cta-submit:hover { opacity: 0.85; }
+  .cta-note { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin-top: 16px; letter-spacing: 0.05em; }
+
+  footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 48px; display: flex; align-items: center; justify-content: space-between; }
+  .footer-logo { font-size: 16px; font-weight: 800; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px; }
+  footer p { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); letter-spacing: 0.05em; }
+  .footer-links { display: flex; gap: 28px; list-style: none; }
+  .footer-links a { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); text-decoration: none; letter-spacing: 0.05em; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--accent); }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+  .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 1000px) { .insight-card { display: none; } }
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    .hero { padding: 100px 24px 60px; }
+    h1 { font-size: 48px; }
+    .stats-bar { grid-template-columns: repeat(2, 1fr); }
+    .stat { padding: 24px; }
+    section { padding: 80px 24px; }
+    .features-grid, .values-grid { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: 1fr; }
+    .step { border-right: none; border-bottom: 1px solid var(--border); }
+    .problem-grid { grid-template-columns: 1fr; gap: 48px; }
+    footer { flex-direction: column; gap: 24px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+
+<nav id="nav">
+  <div class="logo"><div class="logo-dot"></div>WorkEnablr</div>
+  <ul class="nav-links">
+    <li><a href="#problem">The Problem</a></li>
+    <li><a href="#features">Capabilities</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#values">Principles</a></li>
+  </ul>
+  <button class="nav-cta">Request Access</button>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">Operational Intelligence Platform</div>
+  <h1>Clarity inside<br>the <span>execution</span><br>layer.</h1>
+  <p class="hero-sub">As teams scale, coordination becomes invisible. WorkEnablr surfaces bottlenecks, blocked tasks, and ownership gaps — before they become costly problems.</p>
+  <div class="hero-actions">
+    <a href="#cta" class="btn-primary">
+      Request Early Access
+      <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </a>
+    <a href="#features" class="btn-ghost">
+      <svg width="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M5.5 7l1.5 1.5 2-2.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      See capabilities
+    </a>
+  </div>
+
+  <div class="insight-card">
+    <div class="card-header">
+      <span class="card-title">Weekly Operational Health</span>
+      <span class="card-badge">LIVE INSIGHT</span>
+    </div>
+    <div class="card-body">
+      <div class="insight-row">
+        <span class="insight-icon">🚨</span>
+        <div>
+          <div class="insight-text"><strong>3 tasks stalled</strong> for 5+ days in the backend squad — ownership unclear across Jira + Slack.</div>
+          <div class="insight-meta">Detected · Engineering · High Priority</div>
+        </div>
+      </div>
+      <div class="insight-row">
+        <span class="insight-icon">📊</span>
+        <div>
+          <div class="insight-text">Decision lag in <strong>Q4 roadmap thread</strong> — 14 messages, no resolution logged. 6 people awaiting signal.</div>
+          <div class="insight-meta">Detected · Product · Medium Priority</div>
+        </div>
+      </div>
+      <div class="insight-row">
+        <span class="insight-icon">✅</span>
+        <div>
+          <div class="insight-text">Onboarding flow improved: <strong>avg. handoff time down 38%</strong> vs. last month across 4 new hires.</div>
+          <div class="insight-meta">Trend · People Ops · Positive</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <span class="live-dot"></span>
+      Synced from Slack · Jira · Notion · 3 min ago
+    </div>
+  </div>
+</div>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="marquee-item">Bottleneck Detection</span>
+    <span class="marquee-item">Operational Health Scores</span>
+    <span class="marquee-item">Decision Lag Analysis</span>
+    <span class="marquee-item">Risk Signal Detection</span>
+    <span class="marquee-item">Context Synthesis</span>
+    <span class="marquee-item">Coordination Gap Alerts</span>
+    <span class="marquee-item">Ownership Clarity</span>
+    <span class="marquee-item">EU AI Act Compliant</span>
+    <span class="marquee-item">Bottleneck Detection</span>
+    <span class="marquee-item">Operational Health Scores</span>
+    <span class="marquee-item">Decision Lag Analysis</span>
+    <span class="marquee-item">Risk Signal Detection</span>
+    <span class="marquee-item">Context Synthesis</span>
+    <span class="marquee-item">Coordination Gap Alerts</span>
+    <span class="marquee-item">Ownership Clarity</span>
+    <span class="marquee-item">EU AI Act Compliant</span>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat"><div class="stat-num">40<span>%</span></div><div class="stat-label">Less coordination overhead</div></div>
+  <div class="stat"><div class="stat-num">20<span>–150</span></div><div class="stat-label">Ideal team size</div></div>
+  <div class="stat"><div class="stat-num">200<span>+</span></div><div class="stat-label">Signals analysed weekly</div></div>
+  <div class="stat"><div class="stat-num">0</div><div class="stat-label">Employee scoring. Ever.</div></div>
+</div>
+
+<!-- PROBLEM -->
+<section id="problem" class="problem-section">
+  <div class="section-tag reveal">// The Problem</div>
+  <h2 class="reveal">Growth creates<br>invisible friction.</h2>
+  <div class="problem-grid">
+    <div class="problem-list">
+      <div class="problem-item reveal">
+        <span class="p-num">01</span>
+        <div>
+          <div class="p-text">Tasks sit idle with no visibility</div>
+          <div class="p-sub">Work stalls between tools and no one is alerted until it's already late.</div>
+        </div>
+      </div>
+      <div class="problem-item reveal">
+        <span class="p-num">02</span>
+        <div>
+          <div class="p-text">Decisions disappear in threads</div>
+          <div class="p-sub">Critical context fragments across Slack, Notion, and email — invisible to anyone not in the room.</div>
+        </div>
+      </div>
+      <div class="problem-item reveal">
+        <span class="p-num">03</span>
+        <div>
+          <div class="p-text">Managers compile status manually</div>
+          <div class="p-sub">Hours each week spent chasing updates that should surface automatically.</div>
+        </div>
+      </div>
+      <div class="problem-item reveal">
+        <span class="p-num">04</span>
+        <div>
+          <div class="p-text">High performers hit cognitive overload</div>
+          <div class="p-sub">Context switching, unclear ownership, and coordination strain burn out your best people first.</div>
+        </div>
+      </div>
+    </div>
+    <div class="problem-right reveal">
+      <h3>Coordination complexity grows faster than headcount.</h3>
+      <p>Adding five people to a team doesn't add five coordination relationships — it adds dozens. The tools you use were designed for individuals, not for the invisible connective tissue between them.</p>
+      <p>WorkEnablr is built for that connective tissue. It sits between your existing tools and surfaces what's slowing execution — before it becomes a crisis.</p>
+      <div class="callout">WorkEnablr is to operations what revenue intelligence platforms are to sales — not another tool, but an intelligence layer across the ones you already use.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-tag reveal">// Core Capabilities</div>
+  <h2 class="reveal">Visibility into<br>how work actually moves.</h2>
+  <p class="section-desc reveal">Four focused capabilities designed to surface what matters — not everything, just the signals that change outcomes.</p>
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <div class="feature-icon">🔎</div>
+      <h3>Bottleneck Detection</h3>
+      <p>Identifies stalled tasks, delayed transitions, and cross-team blockers across Jira, GitHub, and project tools — surfaced before they cascade.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">📊</div>
+      <h3>Operational Health Overview</h3>
+      <p>A weekly summary of workflow efficiency, decision lag, and coordination friction. Gives founders and COOs a ground-truth view of how the company is executing.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🚨</div>
+      <h3>Risk Signal Detection</h3>
+      <p>Early warnings when projects show patterns of delay, team overload, or repeated blockers. Act on risk while it's still manageable.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🧠</div>
+      <h3>Context Synthesis</h3>
+      <p>Converts fragmented Slack threads and Jira activity into clear, executive-level summaries. Less time reading logs. More time making decisions.</p>
+    </div>
+  </div>
+</section>
+
+<!-- INTEGRATIONS -->
+<section class="integrations-section">
+  <div class="section-tag reveal">// Integrations</div>
+  <h2 class="reveal">Connects to your<br>existing stack.</h2>
+  <p class="integrations-note reveal">WorkEnablr doesn't replace your tools. It adds an intelligence layer across them. No migration, no new workflows — just deeper visibility into what you already have.</p>
+  <div class="integrations-grid reveal">
+    <div class="integration-pill"><span>💬</span> Slack</div>
+    <div class="integration-pill"><span>📋</span> Jira</div>
+    <div class="integration-pill"><span>📄</span> Notion</div>
+    <div class="integration-pill"><span>🐙</span> GitHub</div>
+    <div class="integration-pill"><span>👥</span> Personio</div>
+    <div class="integration-pill"><span>📅</span> Google Workspace</div>
+    <div class="integration-pill"><span>🔷</span> Linear</div>
+    <div class="integration-pill"><span>🗂️</span> Confluence</div>
+    <div class="integration-pill"><span>⚡</span> More coming</div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-tag reveal">// How It Works</div>
+  <h2 class="reveal">From noise to<br>clarity in four steps.</h2>
+  <div class="steps">
+    <div class="step reveal">
+      <div class="step-num"><span>01</span> / Connect</div>
+      <h3>Link Your Tools</h3>
+      <p>Authorise your collaboration stack in minutes. WorkEnablr begins reading activity across Slack, Jira, Notion, and more — no config needed.</p>
+      <div class="step-connector">›</div>
+    </div>
+    <div class="step reveal">
+      <div class="step-num"><span>02</span> / Analyse</div>
+      <h3>Map Workflow Patterns</h3>
+      <p>WorkEnablr detects coordination patterns, task transitions, ownership chains, and decision flows across all connected tools.</p>
+      <div class="step-connector">›</div>
+    </div>
+    <div class="step reveal">
+      <div class="step-num"><span>03</span> / Surface</div>
+      <h3>Deliver Actionable Signals</h3>
+      <p>Bottlenecks, risk signals, and coordination gaps surface as clear, prioritised insights — not raw data dumps or another dashboard to manage.</p>
+      <div class="step-connector">›</div>
+    </div>
+    <div class="step reveal">
+      <div class="step-num"><span>04</span> / Improve</div>
+      <h3>Track Execution Health</h3>
+      <p>Weekly operational health reports let leadership measure coordination quality over time and see, concretely, what's improving.</p>
+    </div>
+  </div>
+</section>
+
+<!-- VALUES -->
+<section id="values" style="background: var(--surface); border-top: 1px solid var(--border);">
+  <div class="section-tag reveal">// Principles</div>
+  <h2 class="reveal">Built with<br>intention.</h2>
+  <p class="section-desc reveal">WorkEnablr is not built to surveil your team. It is built to reduce the friction that slows them down.</p>
+  <div class="values-grid">
+    <div class="value-card reveal">
+      <div class="value-tag">Clarity over noise</div>
+      <h3>Operational Transparency</h3>
+      <p>Growth should not mean chaos. WorkEnablr replaces status meetings and manual update-gathering with a single, structured view of execution health.</p>
+    </div>
+    <div class="value-card reveal">
+      <div class="value-tag">Human-first AI</div>
+      <h3>Mental Sustainability</h3>
+      <p>High performers leave because of coordination overload — not lack of skill. WorkEnablr reduces cognitive strain. It doesn't add to it.</p>
+    </div>
+    <div class="value-card reveal">
+      <div class="value-tag">EU AI Act Aligned</div>
+      <h3>Responsible by Design</h3>
+      <p>Transparent logic. Clear decision signals. No opaque employee scoring. Privacy-first architecture from day one. Responsible AI is a competitive advantage, not a compliance checkbox.</p>
+    </div>
+    <div class="value-card reveal">
+      <div class="value-tag">Measurable ROI</div>
+      <h3>Productivity Is Quantifiable</h3>
+      <p>Saved coordination hours, fewer status meetings, earlier risk detection — these are real numbers. WorkEnablr is built to show them clearly.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta" class="cta-section">
+  <div class="section-tag reveal" style="justify-content:center; display:flex;">// Early Access</div>
+  <h2 class="reveal">See your team's<br><span style="color:var(--accent)">execution clearly.</span></h2>
+  <p class="reveal">Built for scaling teams of 20–150. No credit card. No sales call required. Join the waitlist and be first in line.</p>
+  <div class="cta-input-row reveal">
+    <input class="cta-input" type="email" placeholder="you@company.com">
+    <button class="cta-submit">→ Request Access</button>
+  </div>
+  <p class="cta-note reveal">For founders, COOs, and engineering leaders. EU GDPR compliant.</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo"><div class="logo-dot"></div>WorkEnablr</div>
+  <p>© 2025 WorkEnablr. Operational intelligence for scaling teams.</p>
+  <ul class="footer-links">
+    <li><a href="#">Privacy</a></li>
+    <li><a href="#">Terms</a></li>
+    <li><a href="#">Security</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let rx = 0, ry = 0, mx = 0, my = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+  });
+  function animateRing() {
+    rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 40); });
+
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
