@@ -9,11 +9,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* ── Products Section ── */
-        .products-section {
-            padding: 100px 0;
-            background-color: #1a1a2e;
-        }
-
         .product-cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -105,11 +100,19 @@
             margin-top: 4px;
         }
 
-        /* ── Latest Developments Section ── */
-        .developments-section {
+        /* ── Unified section spacing ── */
+        .developments-section,
+        .products-section,
+        .how-it-works-section,
+        .features-section,
+        .use-cases-section,
+        .dashboard-section,
+        .pricing-section {
             padding: 100px 0;
-            background-color: #0f0f20;
         }
+
+        .developments-section { background-color: #0f0f20; }
+        .products-section     { background-color: #1a1a2e; }
 
         .dev-grid {
             display: grid;
@@ -206,6 +209,10 @@
         /* Nav highlight for Latest */
         .navbar nav ul li a.nav-latest {
             color: #6cb2ff;
+            font-weight: 700;
+        }
+        .navbar nav ul li a.nav-latest::after {
+            background-color: #6cb2ff;
         }
     </style>
 </head>
@@ -247,10 +254,76 @@
                     <button class="cta-button secondary">Learn More</button>
                 </div>
             </div>
-            <div class="hero-visual">
-                <div class="animation-placeholder">
-                    <img src="VideoImg.png" alt="AIEnablr Product Demo">
+        </div>
+    </section>
+
+    <!-- ── LATEST DEVELOPMENTS ── -->
+    <section id="developments" class="developments-section">
+        <div class="container">
+            <h2>Latest Developments</h2>
+            <p class="section-subtitle">Product updates, new launches, and thinking from the AIEnablr team.</p>
+            <div class="dev-grid">
+
+                <div class="dev-card">
+                    <div class="dev-card-meta">
+                        <span class="dev-type type-launch">🚀 Launch</span>
+                        <span class="dev-date">June 2025</span>
+                    </div>
+                    <h3>Introducing WorkEnablr</h3>
+                    <p>Our newest product is live. WorkEnablr is an operational intelligence layer for scaling teams — it connects to your collaboration tools and surfaces execution risks before they become problems.</p>
+                    <a href="workenablr/index.html">Explore WorkEnablr <i class="fas fa-arrow-right"></i></a>
                 </div>
+
+                <div class="dev-card">
+                    <div class="dev-card-meta">
+                        <span class="dev-type type-update">⚙️ Update</span>
+                        <span class="dev-date">May 2025</span>
+                    </div>
+                    <h3>MCP Server Generation v2.0</h3>
+                    <p>Faster generation, support for GraphQL subscriptions, and a new one-click deploy flow. MCP server spin-up time is now under 30 seconds for most API specs.</p>
+                    <a href="#">Read changelog <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="dev-card">
+                    <div class="dev-card-meta">
+                        <span class="dev-type type-blog">✍️ Blog</span>
+                        <span class="dev-date">April 2025</span>
+                    </div>
+                    <h3>Why Every API Needs a Natural Language Layer</h3>
+                    <p>Users don't think in endpoints. They think in questions. We explore why adding a conversational interface to your API is no longer a differentiator — it's an expectation.</p>
+                    <a href="#">Read article <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="dev-card">
+                    <div class="dev-card-meta">
+                        <span class="dev-type type-update">⚙️ Update</span>
+                        <span class="dev-date">March 2025</span>
+                    </div>
+                    <h3>Admin Dashboard Redesign</h3>
+                    <p>A fully revamped control center with improved API usage analytics, team management, and a new MCP deployment wizard. Available to all plans.</p>
+                    <a href="#">View what's new <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="dev-card">
+                    <div class="dev-card-meta">
+                        <span class="dev-type type-blog">✍️ Blog</span>
+                        <span class="dev-date">February 2025</span>
+                    </div>
+                    <h3>The Hidden Cost of Coordination Overhead in Scaling Teams</h3>
+                    <p>As teams grow past 20 people, coordination complexity grows non-linearly. We break down the financial and human cost — and what operational intelligence can do about it.</p>
+                    <a href="#">Read article <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="dev-card">
+                    <div class="dev-card-meta">
+                        <span class="dev-type type-launch">🚀 Launch</span>
+                        <span class="dev-date">January 2025</span>
+                    </div>
+                    <h3>AIEnablr Public Beta</h3>
+                    <p>After months of private testing with design partners, AIEnablr is now available in public beta. Connect your first API and deploy a chat widget in under 10 minutes.</p>
+                    <a href="contact.html">Request access <i class="fas fa-arrow-right"></i></a>
+                </div>
+
             </div>
         </div>
     </section>
@@ -403,77 +476,6 @@
             <p class="section-subtitle">Our revamped admin dashboard gives you complete control over your AI integration.</p>
             <div class="dashboard-showcase">
                 <p style="text-align: center; padding: 5rem; border: 2px dashed #ccc;">[Screenshot of the new Admin Dashboard will be here]</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- ── LATEST DEVELOPMENTS ── -->
-    <section id="developments" class="developments-section">
-        <div class="container">
-            <h2>Latest Developments</h2>
-            <p class="section-subtitle">Product updates, new launches, and thinking from the AIEnablr team.</p>
-            <div class="dev-grid">
-
-                <div class="dev-card">
-                    <div class="dev-card-meta">
-                        <span class="dev-type type-launch">🚀 Launch</span>
-                        <span class="dev-date">June 2025</span>
-                    </div>
-                    <h3>Introducing WorkEnablr</h3>
-                    <p>Our newest product is live. WorkEnablr is an operational intelligence layer for scaling teams — it connects to your collaboration tools and surfaces execution risks before they become problems.</p>
-                    <a href="workenablr/index.html">Explore WorkEnablr <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <div class="dev-card">
-                    <div class="dev-card-meta">
-                        <span class="dev-type type-update">⚙️ Update</span>
-                        <span class="dev-date">May 2025</span>
-                    </div>
-                    <h3>MCP Server Generation v2.0</h3>
-                    <p>Faster generation, support for GraphQL subscriptions, and a new one-click deploy flow. MCP server spin-up time is now under 30 seconds for most API specs.</p>
-                    <a href="#">Read changelog <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <div class="dev-card">
-                    <div class="dev-card-meta">
-                        <span class="dev-type type-blog">✍️ Blog</span>
-                        <span class="dev-date">April 2025</span>
-                    </div>
-                    <h3>Why Every API Needs a Natural Language Layer</h3>
-                    <p>Users don't think in endpoints. They think in questions. We explore why adding a conversational interface to your API is no longer a differentiator — it's an expectation.</p>
-                    <a href="#">Read article <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <div class="dev-card">
-                    <div class="dev-card-meta">
-                        <span class="dev-type type-update">⚙️ Update</span>
-                        <span class="dev-date">March 2025</span>
-                    </div>
-                    <h3>Admin Dashboard Redesign</h3>
-                    <p>A fully revamped control center with improved API usage analytics, team management, and a new MCP deployment wizard. Available to all plans.</p>
-                    <a href="#">View what's new <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <div class="dev-card">
-                    <div class="dev-card-meta">
-                        <span class="dev-type type-blog">✍️ Blog</span>
-                        <span class="dev-date">February 2025</span>
-                    </div>
-                    <h3>The Hidden Cost of Coordination Overhead in Scaling Teams</h3>
-                    <p>As teams grow past 20 people, coordination complexity grows non-linearly. We break down the financial and human cost — and what operational intelligence can do about it.</p>
-                    <a href="#">Read article <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <div class="dev-card">
-                    <div class="dev-card-meta">
-                        <span class="dev-type type-launch">🚀 Launch</span>
-                        <span class="dev-date">January 2025</span>
-                    </div>
-                    <h3>AIEnablr Public Beta</h3>
-                    <p>After months of private testing with design partners, AIEnablr is now available in public beta. Connect your first API and deploy a chat widget in under 10 minutes.</p>
-                    <a href="contact.html">Request access <i class="fas fa-arrow-right"></i></a>
-                </div>
-
             </div>
         </div>
     </section>
