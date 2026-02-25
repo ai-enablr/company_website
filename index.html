@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,168 +8,209 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ── WorkEnablr Featured Card ── */
+        /* ── Products Section ── */
         .products-section {
-            background: #f8f9fc;
-            padding: 80px 0;
+            padding: 100px 0;
+            background-color: #1a1a2e;
         }
-        .products-section h2 {
-            text-align: center;
-            margin-bottom: 12px;
-        }
-        .products-section .section-subtitle {
-            text-align: center;
-            margin-bottom: 48px;
-        }
+
         .product-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 28px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
         }
+
         .product-card {
-            background: #fff;
-            border: 1px solid #e5e7ef;
-            border-radius: 12px;
-            padding: 36px 32px;
+            background-color: #2b2b4d;
+            padding: 40px;
+            border-radius: 8px;
+            border: 1px solid transparent;
             display: flex;
             flex-direction: column;
             gap: 16px;
-            transition: box-shadow 0.2s, transform 0.2s;
             text-decoration: none;
-            color: inherit;
+            color: var(--text-color-light);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
         }
+
         .product-card:hover {
-            box-shadow: 0 8px 32px rgba(80, 80, 200, 0.10);
-            transform: translateY(-3px);
+            transform: translateY(-8px);
+            box-shadow: 0 10px 40px rgba(0, 123, 255, 0.2);
+            border-color: rgba(0, 123, 255, 0.5);
+            color: var(--text-color-light);
         }
+
         .product-card-badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
             font-size: 11px;
-            font-weight: 600;
+            font-weight: 700;
             letter-spacing: 0.12em;
             text-transform: uppercase;
             padding: 4px 12px;
             border-radius: 20px;
             width: fit-content;
         }
-        .badge-new { background: #e8fdf4; color: #00a870; }
-        .badge-core { background: #eef2ff; color: #4f46e5; }
+
+        .badge-new {
+            background: rgba(0, 123, 255, 0.15);
+            color: #6cb2ff;
+            border: 1px solid rgba(0, 123, 255, 0.3);
+        }
+
+        .badge-core {
+            background: rgba(108, 117, 125, 0.15);
+            color: #adb5bd;
+            border: 1px solid rgba(108, 117, 125, 0.3);
+        }
+
         .product-card h3 {
-            font-size: 22px;
-            font-weight: 700;
-            margin: 0;
+            font-size: 1.6em;
+            color: #fff;
+            margin-bottom: 0;
         }
+
         .product-card p {
-            font-size: 14px;
-            color: #6b7280;
-            line-height: 1.7;
-            margin: 0;
+            font-size: 1em;
+            opacity: 0.8;
             flex: 1;
+            margin-bottom: 0;
         }
+
         .product-card-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
         }
+
         .product-tag {
             font-size: 11px;
             padding: 4px 10px;
-            background: #f3f4f6;
+            background: rgba(0, 123, 255, 0.1);
+            border: 1px solid rgba(0, 123, 255, 0.2);
             border-radius: 4px;
-            color: #374151;
+            color: #6cb2ff;
             font-family: monospace;
             letter-spacing: 0.04em;
         }
+
         .product-card-link {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            font-size: 13px;
+            gap: 8px;
+            font-size: 1em;
             font-weight: 600;
-            color: #4f46e5;
+            color: var(--primary-color);
             margin-top: 4px;
         }
-        .product-card-link i { font-size: 11px; }
 
         /* ── Latest Developments Section ── */
         .developments-section {
-            padding: 80px 0;
-            background: #fff;
+            padding: 100px 0;
+            background-color: #0f0f20;
         }
-        .developments-section h2 { text-align: center; margin-bottom: 12px; }
-        .developments-section .section-subtitle { text-align: center; margin-bottom: 48px; }
 
         .dev-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 28px;
         }
+
         .dev-card {
-            border: 1px solid #e5e7ef;
-            border-radius: 10px;
-            padding: 28px 26px;
-            background: #fafafa;
+            background-color: #2b2b4d;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            padding: 32px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            transition: box-shadow 0.2s;
+            gap: 12px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
         }
-        .dev-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); }
+
+        .dev-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 40px rgba(0, 123, 255, 0.2);
+            border-color: rgba(0, 123, 255, 0.4);
+        }
+
         .dev-card-meta {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
+
         .dev-type {
             font-size: 10px;
             font-weight: 700;
             letter-spacing: 0.12em;
             text-transform: uppercase;
-            padding: 3px 10px;
+            padding: 4px 12px;
             border-radius: 20px;
         }
-        .type-launch { background: #e8fdf4; color: #00a870; }
-        .type-update { background: #fff7ed; color: #ea6c00; }
-        .type-blog   { background: #eef2ff; color: #4f46e5; }
+
+        .type-launch {
+            background: rgba(0, 200, 100, 0.12);
+            color: #4ade80;
+            border: 1px solid rgba(0, 200, 100, 0.25);
+        }
+
+        .type-update {
+            background: rgba(0, 123, 255, 0.12);
+            color: #6cb2ff;
+            border: 1px solid rgba(0, 123, 255, 0.25);
+        }
+
+        .type-blog {
+            background: rgba(167, 139, 250, 0.12);
+            color: #a78bfa;
+            border: 1px solid rgba(167, 139, 250, 0.25);
+        }
+
         .dev-date {
             font-size: 12px;
-            color: #9ca3af;
+            color: #6c757d;
         }
+
         .dev-card h3 {
-            font-size: 17px;
-            font-weight: 600;
-            margin: 0;
+            font-size: 1.2em;
+            color: #fff;
+            margin-bottom: 0;
             line-height: 1.4;
         }
+
         .dev-card p {
-            font-size: 13px;
-            color: #6b7280;
-            line-height: 1.7;
-            margin: 0;
+            font-size: 0.95em;
+            opacity: 0.75;
+            margin-bottom: 0;
             flex: 1;
+            line-height: 1.7;
         }
+
         .dev-card a {
-            font-size: 13px;
+            font-size: 0.95em;
             font-weight: 600;
-            color: #4f46e5;
+            color: var(--primary-color);
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
             margin-top: 4px;
+            transition: color 0.2s;
         }
-        .dev-card a:hover { text-decoration: underline; }
 
-        /* ── Nav "Products" dropdown hint ── */
-        nav ul li a.nav-highlight {
-            color: #4f46e5;
-            font-weight: 600;
+        .dev-card a:hover {
+            color: #6cb2ff;
+        }
+
+        /* Nav highlight for Latest */
+        .navbar nav ul li a.nav-latest {
+            color: #6cb2ff;
         }
     </style>
 </head>
 <body>
+
 <header class="navbar">
     <div class="container">
         <div class="logo">
@@ -180,21 +220,22 @@
         </div>
         <nav>
             <ul>
+                <li><a href="#developments" class="nav-latest">Latest</a></li>
                 <li><a href="#how-it-works">How it Works</a></li>
                 <li><a href="#features">Features</a></li>
                 <li><a href="#use-cases">Use Cases</a></li>
-                <li><a href="#products" class="nav-highlight">Products</a></li>
-                <li><a href="#developments">Latest</a></li>
+                <li><a href="#products">Products</a></li>
                 <li><a href="index.html">Dashboard</a></li>
                 <li><a href="contact.html">Pricing</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
         </nav>
-        <a href="contact.html" class="cta-button nav-cta">Request a Demo</a>
+        <a href="contact.html" class="cta-button nav-cta primary">Request a Demo</a>
     </div>
 </header>
 
 <main>
+
     <!-- ── HERO ── -->
     <section id="hero" class="hero-section">
         <div class="container">
@@ -319,8 +360,7 @@
             <p class="section-subtitle">A growing suite of AI tools built for modern teams.</p>
             <div class="product-cards">
 
-                <!-- AIEnablr core -->
-                <div class="product-card" style="cursor:default;">
+                <div class="product-card" style="cursor: default;">
                     <div class="product-card-badge badge-core">
                         <i class="fas fa-cube"></i> Core Platform
                     </div>
@@ -331,10 +371,11 @@
                         <span class="product-tag">MCP Server</span>
                         <span class="product-tag">Chat Widget</span>
                     </div>
-                    <span class="product-card-link" style="color:#6b7280; cursor:default;">You are here</span>
+                    <span class="product-card-link" style="color: #6c757d; cursor: default;">
+                        <i class="fas fa-map-marker-alt"></i> You are here
+                    </span>
                 </div>
 
-                <!-- WorkEnablr -->
                 <a class="product-card" href="workenablr/index.html">
                     <div class="product-card-badge badge-new">
                         <i class="fas fa-star"></i> New
