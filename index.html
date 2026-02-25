@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +8,167 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ── WorkEnablr Featured Card ── */
+        .products-section {
+            background: #f8f9fc;
+            padding: 80px 0;
+        }
+        .products-section h2 {
+            text-align: center;
+            margin-bottom: 12px;
+        }
+        .products-section .section-subtitle {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        .product-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 28px;
+        }
+        .product-card {
+            background: #fff;
+            border: 1px solid #e5e7ef;
+            border-radius: 12px;
+            padding: 36px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            transition: box-shadow 0.2s, transform 0.2s;
+            text-decoration: none;
+            color: inherit;
+        }
+        .product-card:hover {
+            box-shadow: 0 8px 32px rgba(80, 80, 200, 0.10);
+            transform: translateY(-3px);
+        }
+        .product-card-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 20px;
+            width: fit-content;
+        }
+        .badge-new { background: #e8fdf4; color: #00a870; }
+        .badge-core { background: #eef2ff; color: #4f46e5; }
+        .product-card h3 {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0;
+        }
+        .product-card p {
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.7;
+            margin: 0;
+            flex: 1;
+        }
+        .product-card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .product-tag {
+            font-size: 11px;
+            padding: 4px 10px;
+            background: #f3f4f6;
+            border-radius: 4px;
+            color: #374151;
+            font-family: monospace;
+            letter-spacing: 0.04em;
+        }
+        .product-card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4f46e5;
+            margin-top: 4px;
+        }
+        .product-card-link i { font-size: 11px; }
+
+        /* ── Latest Developments Section ── */
+        .developments-section {
+            padding: 80px 0;
+            background: #fff;
+        }
+        .developments-section h2 { text-align: center; margin-bottom: 12px; }
+        .developments-section .section-subtitle { text-align: center; margin-bottom: 48px; }
+
+        .dev-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+        .dev-card {
+            border: 1px solid #e5e7ef;
+            border-radius: 10px;
+            padding: 28px 26px;
+            background: #fafafa;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: box-shadow 0.2s;
+        }
+        .dev-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); }
+        .dev-card-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .dev-type {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+        .type-launch { background: #e8fdf4; color: #00a870; }
+        .type-update { background: #fff7ed; color: #ea6c00; }
+        .type-blog   { background: #eef2ff; color: #4f46e5; }
+        .dev-date {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+        .dev-card h3 {
+            font-size: 17px;
+            font-weight: 600;
+            margin: 0;
+            line-height: 1.4;
+        }
+        .dev-card p {
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.7;
+            margin: 0;
+            flex: 1;
+        }
+        .dev-card a {
+            font-size: 13px;
+            font-weight: 600;
+            color: #4f46e5;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 4px;
+        }
+        .dev-card a:hover { text-decoration: underline; }
+
+        /* ── Nav "Products" dropdown hint ── */
+        nav ul li a.nav-highlight {
+            color: #4f46e5;
+            font-weight: 600;
+        }
+    </style>
 </head>
 <body>
 <header class="navbar">
@@ -21,6 +183,8 @@
                 <li><a href="#how-it-works">How it Works</a></li>
                 <li><a href="#features">Features</a></li>
                 <li><a href="#use-cases">Use Cases</a></li>
+                <li><a href="#products" class="nav-highlight">Products</a></li>
+                <li><a href="#developments">Latest</a></li>
                 <li><a href="index.html">Dashboard</a></li>
                 <li><a href="contact.html">Pricing</a></li>
                 <li><a href="#contact">Contact</a></li>
@@ -31,6 +195,7 @@
 </header>
 
 <main>
+    <!-- ── HERO ── -->
     <section id="hero" class="hero-section">
         <div class="container">
             <div class="hero-content">
@@ -49,6 +214,7 @@
         </div>
     </section>
 
+    <!-- ── HOW IT WORKS ── -->
     <section id="how-it-works" class="how-it-works-section">
         <div class="container">
             <h2>How It Works</h2>
@@ -79,6 +245,7 @@
         </div>
     </section>
 
+    <!-- ── FEATURES ── -->
     <section id="features" class="features-section">
         <div class="container">
             <h2>Key Features</h2>
@@ -118,6 +285,7 @@
         </div>
     </section>
 
+    <!-- ── USE CASES ── -->
     <section id="use-cases" class="use-cases-section">
         <div class="container">
             <h2>Who is it for?</h2>
@@ -144,6 +312,50 @@
         </div>
     </section>
 
+    <!-- ── PRODUCTS ── -->
+    <section id="products" class="products-section">
+        <div class="container">
+            <h2>Our Products</h2>
+            <p class="section-subtitle">A growing suite of AI tools built for modern teams.</p>
+            <div class="product-cards">
+
+                <!-- AIEnablr core -->
+                <div class="product-card" style="cursor:default;">
+                    <div class="product-card-badge badge-core">
+                        <i class="fas fa-cube"></i> Core Platform
+                    </div>
+                    <h3>AIEnablr</h3>
+                    <p>Give your APIs a voice. Connect any REST, GraphQL, or gRPC API and deploy a natural language interface for your users in minutes — no ML expertise needed.</p>
+                    <div class="product-card-tags">
+                        <span class="product-tag">API Integration</span>
+                        <span class="product-tag">MCP Server</span>
+                        <span class="product-tag">Chat Widget</span>
+                    </div>
+                    <span class="product-card-link" style="color:#6b7280; cursor:default;">You are here</span>
+                </div>
+
+                <!-- WorkEnablr -->
+                <a class="product-card" href="workenablr/index.html">
+                    <div class="product-card-badge badge-new">
+                        <i class="fas fa-star"></i> New
+                    </div>
+                    <h3>WorkEnablr</h3>
+                    <p>An AI-powered operational intelligence platform for scaling teams. Surfaces bottlenecks, coordination gaps, and execution risks across Slack, Jira, Notion, and more — before they become costly problems.</p>
+                    <div class="product-card-tags">
+                        <span class="product-tag">Ops Intelligence</span>
+                        <span class="product-tag">Bottleneck Detection</span>
+                        <span class="product-tag">Team Health</span>
+                    </div>
+                    <span class="product-card-link">
+                        Explore WorkEnablr <i class="fas fa-arrow-right"></i>
+                    </span>
+                </a>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ── DASHBOARD ── -->
     <section id="dashboard" class="dashboard-section">
         <div class="container">
             <h2>The Control Center for Your AI</h2>
@@ -154,6 +366,78 @@
         </div>
     </section>
 
+    <!-- ── LATEST DEVELOPMENTS ── -->
+    <section id="developments" class="developments-section">
+        <div class="container">
+            <h2>Latest Developments</h2>
+            <p class="section-subtitle">Product updates, new launches, and thinking from the AIEnablr team.</p>
+            <div class="dev-grid">
+
+                <div class="dev-card">
+                    <div class="dev-card-meta">
+                        <span class="dev-type type-launch">🚀 Launch</span>
+                        <span class="dev-date">June 2025</span>
+                    </div>
+                    <h3>Introducing WorkEnablr</h3>
+                    <p>Our newest product is live. WorkEnablr is an operational intelligence layer for scaling teams — it connects to your collaboration tools and surfaces execution risks before they become problems.</p>
+                    <a href="workenablr/index.html">Explore WorkEnablr <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="dev-card">
+                    <div class="dev-card-meta">
+                        <span class="dev-type type-update">⚙️ Update</span>
+                        <span class="dev-date">May 2025</span>
+                    </div>
+                    <h3>MCP Server Generation v2.0</h3>
+                    <p>Faster generation, support for GraphQL subscriptions, and a new one-click deploy flow. MCP server spin-up time is now under 30 seconds for most API specs.</p>
+                    <a href="#">Read changelog <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="dev-card">
+                    <div class="dev-card-meta">
+                        <span class="dev-type type-blog">✍️ Blog</span>
+                        <span class="dev-date">April 2025</span>
+                    </div>
+                    <h3>Why Every API Needs a Natural Language Layer</h3>
+                    <p>Users don't think in endpoints. They think in questions. We explore why adding a conversational interface to your API is no longer a differentiator — it's an expectation.</p>
+                    <a href="#">Read article <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="dev-card">
+                    <div class="dev-card-meta">
+                        <span class="dev-type type-update">⚙️ Update</span>
+                        <span class="dev-date">March 2025</span>
+                    </div>
+                    <h3>Admin Dashboard Redesign</h3>
+                    <p>A fully revamped control center with improved API usage analytics, team management, and a new MCP deployment wizard. Available to all plans.</p>
+                    <a href="#">View what's new <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="dev-card">
+                    <div class="dev-card-meta">
+                        <span class="dev-type type-blog">✍️ Blog</span>
+                        <span class="dev-date">February 2025</span>
+                    </div>
+                    <h3>The Hidden Cost of Coordination Overhead in Scaling Teams</h3>
+                    <p>As teams grow past 20 people, coordination complexity grows non-linearly. We break down the financial and human cost — and what operational intelligence can do about it.</p>
+                    <a href="#">Read article <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="dev-card">
+                    <div class="dev-card-meta">
+                        <span class="dev-type type-launch">🚀 Launch</span>
+                        <span class="dev-date">January 2025</span>
+                    </div>
+                    <h3>AIEnablr Public Beta</h3>
+                    <p>After months of private testing with design partners, AIEnablr is now available in public beta. Connect your first API and deploy a chat widget in under 10 minutes.</p>
+                    <a href="contact.html">Request access <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ── PRICING ── -->
     <section id="pricing" class="pricing-section">
         <div class="container">
             <h2>Simple, Transparent Pricing</h2>
@@ -195,6 +479,7 @@
         </div>
     </section>
 
+    <!-- ── CONTACT CTA ── -->
     <section id="contact" class="contact-cta-section">
         <div class="container">
             <h2>Ready to Give Your APIs a Voice?</h2>
