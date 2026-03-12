@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Scale Readiness — AIEnablr</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #080c10;
+      --surface:  #0e1318;
+      --surface2: #141c24;
+      --border:   #1e2d3d;
+      --accent:   #00e5ff;
+      --accent2:  #ff6b35;
+      --accent3:  #7fff6b;
+      --text:     #e8edf2;
+      --muted:    #6b8196;
+      --danger:   #ff4444;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ─────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 3rem;
+      background: rgba(8,12,16,0.9);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+    .nav-logo img { height: 28px; filter: brightness(1.1); }
+    .nav-badge {
+      font-family: 'DM Mono', monospace; font-size: 0.65rem; font-weight: 500;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent);
+      background: rgba(0,229,255,0.08); border: 1px solid rgba(0,229,255,0.2);
+      padding: 0.2rem 0.5rem; border-radius: 3px;
+    }
+    .nav-cta {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--accent); color: #000;
+      font-family: 'DM Mono', monospace; font-size: 0.75rem; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.6rem 1.25rem; border-radius: 4px; text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .nav-cta:hover { background: #33ecff; transform: translateY(-1px); }
+
+    /* ── HERO ────────────────────────────── */
+    .hero {
+      min-height: 100vh; display: flex; flex-direction: column;
+      justify-content: center; padding: 8rem 3rem 5rem;
+      position: relative; overflow: hidden;
+    }
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 30%, transparent 100%);
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 30%, transparent 100%);
+    }
+    .hero-glow {
+      position: absolute; width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(0,229,255,0.07) 0%, transparent 70%);
+      top: 50%; left: 50%; transform: translate(-50%,-60%); pointer-events: none;
+    }
+    .hero-glow-2 {
+      position: absolute; width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(255,107,53,0.06) 0%, transparent 70%);
+      top: 60%; right: 10%; pointer-events: none;
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 900px; }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      font-family: 'DM Mono', monospace; font-size: 0.7rem; font-weight: 500;
+      letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent);
+      margin-bottom: 2rem;
+      animation: fadeUp 0.6s ease 0.1s both;
+    }
+    .eyebrow-dot {
+      width: 6px; height: 6px; background: var(--accent); border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:0.4; transform:scale(0.7); } }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.8rem, 6vw, 5.5rem); font-weight: 800;
+      line-height: 1.0; letter-spacing: -0.02em; margin-bottom: 1.5rem;
+      animation: fadeUp 0.7s ease 0.2s both;
+    }
+    .line-accent { color: var(--accent); display: block; }
+    .line-warn   { color: var(--accent2); display: block; }
+
+    .hero-sub {
+      font-size: 1.15rem; font-weight: 300; color: var(--muted);
+      max-width: 580px; margin-bottom: 2.5rem; line-height: 1.7;
+      animation: fadeUp 0.7s ease 0.35s both;
+    }
+    .hero-sub strong { color: var(--text); font-weight: 400; }
+
+    .hero-actions {
+      display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+      animation: fadeUp 0.7s ease 0.5s both;
+    }
+
+    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+    /* ── BUTTONS ─────────────────────────── */
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--accent); color: #000;
+      font-family: 'DM Mono', monospace; font-size: 0.8rem; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.9rem 2rem; border-radius: 4px; text-decoration: none;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary:hover { background: #33ecff; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,229,255,0.25); }
+
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: transparent; color: var(--muted);
+      font-family: 'DM Mono', monospace; font-size: 0.8rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.9rem 1.5rem; border-radius: 4px; text-decoration: none;
+      border: 1px solid var(--border); transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── TRUST STRIP ─────────────────────── */
+    .trust-strip {
+      padding: 2rem 3rem;
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 3rem; flex-wrap: wrap;
+    }
+    .trust-item {
+      display: flex; align-items: center; gap: 0.6rem;
+      font-family: 'DM Mono', monospace; font-size: 0.7rem;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+    }
+    .trust-icon { color: var(--accent3); }
+
+    /* ── SECTION SHARED ──────────────────── */
+    .section { padding: 6rem 3rem; position: relative; }
+    .section-label {
+      font-family: 'DM Mono', monospace; font-size: 0.65rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 700;
+      line-height: 1.15; margin-bottom: 1.5rem;
+    }
+
+    /* ── PROBLEM GRID ────────────────────── */
+    .problem-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px; background: var(--border);
+      border: 1px solid var(--border); border-radius: 8px;
+      overflow: hidden; margin-top: 3rem;
+    }
+    .problem-card { background: var(--surface); padding: 2rem; transition: background 0.2s; }
+    .problem-card:hover { background: var(--surface2); }
+    .problem-tag {
+      font-family: 'DM Mono', monospace; font-size: 0.65rem;
+      letter-spacing: 0.15em; color: var(--danger);
+      margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;
+    }
+    .problem-tag::before { content: '⚠'; font-size: 0.7rem; }
+    .problem-card h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .problem-card p { font-size: 0.875rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── TIERS ───────────────────────────── */
+    .tiers-section {
+      padding: 6rem 3rem;
+      background: var(--surface);
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    }
+    .tiers-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top: 3rem; }
+
+    .tier-card {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+      padding: 2rem; position: relative; display: flex; flex-direction: column;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+    .tier-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,229,255,0.09); }
+    .tier-card.featured { border-color: var(--accent); background: rgba(0,229,255,0.03); }
+
+    .tier-badge {
+      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      background: var(--accent); color: #000;
+      font-family: 'DM Mono', monospace; font-size: 0.6rem; font-weight: 500;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 0.25rem 0.75rem; border-radius: 20px; white-space: nowrap;
+    }
+    .tier-tag {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 1rem;
+    }
+    .tier-name { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .tier-timeline {
+      font-family: 'DM Mono', monospace; font-size: 0.8rem;
+      color: var(--muted); margin-bottom: 1.5rem;
+    }
+    .tier-desc { font-size: 0.875rem; color: var(--muted); line-height: 1.65; margin-bottom: 1.5rem; flex: 1; }
+    .tier-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.75rem; }
+    .tier-list li {
+      font-size: 0.825rem; color: var(--text);
+      display: flex; align-items: flex-start; gap: 0.6rem;
+    }
+    .tier-list li::before {
+      content: '→'; color: var(--accent);
+      font-family: 'DM Mono', monospace; font-size: 0.75rem;
+      margin-top: 0.1rem; flex-shrink: 0;
+    }
+    .tier-best {
+      font-size: 0.75rem; color: var(--muted); font-style: italic;
+      margin-bottom: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border);
+    }
+    .tier-cta {
+      display: block; text-align: center;
+      background: transparent; border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'DM Mono', monospace; font-size: 0.75rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.75rem; border-radius: 4px; text-decoration: none;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      margin-top: auto;
+    }
+    .tier-cta:hover { border-color: var(--accent); color: var(--accent); }
+    .tier-card.featured .tier-cta { background: var(--accent); border-color: var(--accent); color: #000; }
+    .tier-card.featured .tier-cta:hover { background: #33ecff; }
+
+    /* ── PROCESS ─────────────────────────── */
+    .process-steps {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      margin-top: 3.5rem; position: relative;
+    }
+    .process-steps::before {
+      content: ''; position: absolute;
+      top: 2rem; left: 12.5%; right: 12.5%; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0.3;
+    }
+    .process-step { padding: 0 1.5rem; text-align: center; }
+    .step-num {
+      width: 4rem; height: 4rem; border-radius: 50%;
+      background: var(--surface2); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'DM Mono', monospace; font-size: 0.9rem; font-weight: 500;
+      color: var(--accent); margin: 0 auto 1.25rem; position: relative; z-index: 1;
+    }
+    .step-title { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .step-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── DELIVERABLES ────────────────────── */
+    .deliverables-section {
+      padding: 6rem 3rem;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+    }
+    .deliverables-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 3rem; margin-top: 3rem; align-items: start;
+    }
+    .deliverable-list { display: flex; flex-direction: column; gap: 1rem; }
+    .deliverable-item {
+      display: flex; gap: 1rem; padding: 1.25rem;
+      background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+      transition: border-color 0.2s;
+    }
+    .deliverable-item:hover { border-color: rgba(0,229,255,0.3); }
+    .d-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 0.1rem; }
+    .d-title { font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.25rem; }
+    .d-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.55; }
+
+    .stats-aside {
+      padding: 2rem; background: var(--bg);
+      border: 1px solid var(--border); border-radius: 8px;
+      position: sticky; top: 6rem;
+    }
+    .stats-title { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; color: var(--accent); margin-bottom: 1.5rem; }
+    .stat-row { padding: 1rem 0; border-bottom: 1px solid var(--border); }
+    .stat-row:last-child { border-bottom: none; }
+    .stat-num { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; color: var(--text); line-height: 1; }
+    .stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; }
+
+    /* ── PIPELINE ────────────────────────── */
+    .pipeline-section { padding: 5rem 3rem; border-top: 1px solid var(--border); }
+    .pipeline-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+      padding: 3rem; display: grid; grid-template-columns: 1fr auto;
+      gap: 3rem; align-items: center;
+    }
+    .pipeline-card h3 { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem; }
+    .pipeline-card p { color: var(--muted); font-size: 0.9rem; max-width: 500px; line-height: 1.7; }
+    .pipeline-card p strong { color: var(--accent); font-weight: 400; }
+
+    /* ── FINAL CTA ───────────────────────── */
+    .final-cta {
+      padding: 8rem 3rem; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .final-cta::before {
+      content: ''; position: absolute;
+      width: 800px; height: 800px;
+      background: radial-gradient(circle, rgba(0,229,255,0.06) 0%, transparent 65%);
+      top: 50%; left: 50%; transform: translate(-50%,-50%); pointer-events: none;
+    }
+    .final-cta-inner { position: relative; z-index: 1; }
+    .final-cta h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 800;
+      margin-bottom: 1rem; line-height: 1.1;
+    }
+    .final-cta p {
+      color: var(--muted); font-size: 1rem; margin-bottom: 2.5rem;
+      max-width: 500px; margin-left: auto; margin-right: auto;
+    }
+    .cta-note {
+      margin-top: 1.25rem;
+      font-family: 'DM Mono', monospace; font-size: 0.7rem;
+      color: var(--muted); letter-spacing: 0.05em;
+    }
+    .cta-note a { color: var(--accent); text-decoration: none; }
+    .cta-note a:hover { text-decoration: underline; }
+
+    /* ── CONTACT ─────────────────────────── */
+    .contact-section {
+      padding: 7rem 3rem; border-top: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    .contact-section::before {
+      content: ''; position: absolute;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(0,229,255,0.05) 0%, transparent 70%);
+      bottom: -100px; right: -100px; pointer-events: none;
+    }
+    .contact-inner {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; align-items: center; position: relative; z-index: 1;
+    }
+    .contact-left h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 800;
+      line-height: 1.15; margin-bottom: 1rem;
+    }
+    .contact-left h2 span { color: var(--accent); }
+    .contact-left p { color: var(--muted); font-size: 0.95rem; line-height: 1.75; max-width: 380px; }
+
+    .contact-channels { display: flex; flex-direction: column; gap: 1rem; }
+
+    .contact-channel {
+      display: flex; align-items: center; gap: 1.25rem;
+      padding: 1.25rem 1.5rem;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+      text-decoration: none; position: relative; overflow: hidden;
+      transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+    }
+    .contact-channel::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(0,229,255,0.04), transparent);
+      opacity: 0; transition: opacity 0.25s;
+    }
+    .contact-channel:hover { border-color: var(--accent); transform: translateX(5px); box-shadow: -4px 0 0 var(--accent); }
+    .contact-channel:hover::after { opacity: 1; }
+
+    .contact-channel--email {
+      background: linear-gradient(135deg, rgba(0,229,255,0.07) 0%, var(--surface) 60%);
+      border-color: rgba(0,229,255,0.3);
+    }
+    .contact-channel--email::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0.7;
+    }
+    .contact-channel--email .ch-icon {
+      background: rgba(0,229,255,0.15);
+      border-color: rgba(0,229,255,0.4);
+      color: var(--accent);
+    }
+    .contact-channel--email .ch-value {
+      font-size: 0.9rem;
+      background: linear-gradient(90deg, var(--accent), #7fffd4);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .ch-icon {
+      width: 2.5rem; height: 2.5rem; flex-shrink: 0;
+      background: rgba(0,229,255,0.08); border: 1px solid rgba(0,229,255,0.15);
+      border-radius: 6px; display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; position: relative; z-index: 1;
+    }
+    .ch-body { position: relative; z-index: 1; flex: 1; }
+    .ch-label {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 0.2rem;
+    }
+    .ch-value {
+      font-family: 'DM Mono', monospace; font-size: 0.85rem;
+      color: var(--text); font-weight: 500;
+    }
+    .ch-arrow {
+      color: var(--muted); font-size: 0.85rem;
+      position: relative; z-index: 1;
+      transition: color 0.2s, transform 0.2s;
+    }
+    .contact-channel:hover .ch-arrow { color: var(--accent); transform: translateX(4px); }
+
+    .contact-note {
+      margin-top: 1.25rem;
+      font-family: 'DM Mono', monospace; font-size: 0.65rem;
+      color: var(--muted); letter-spacing: 0.06em;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .contact-note::before {
+      content: ''; display: inline-block;
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent3); flex-shrink: 0;
+    }
+
+    /* ── FOOTER ──────────────────────────── */
+    footer {
+      padding: 2rem 3rem; border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    footer img { height: 22px; filter: brightness(0.7); }
+    footer p { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.05em; }
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--accent); }
+
+    /* ── SCROLL REVEAL ───────────────────── */
+    .reveal {
+      opacity: 0; transform: translateY(28px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── RESPONSIVE ──────────────────────── */
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .hero, .section, .tiers-section, .deliverables-section,
+      .pipeline-section, .final-cta, .contact-section { padding: 4rem 1.5rem; }
+      .trust-strip { padding: 1.5rem; gap: 1.5rem; }
+      .problem-grid, .tiers-grid, .deliverables-grid, .contact-inner { grid-template-columns: 1fr; }
+      .process-steps { grid-template-columns: 1fr 1fr; }
+      .process-steps::before { display: none; }
+      .pipeline-card { grid-template-columns: 1fr; gap: 1.5rem; }
+      footer { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ─────────────────────────────────── -->
+<nav>
+  <a href="https://aienablr.com" class="nav-logo">
+    <img src="https://aienablr.com/logowithoutTagline.png" alt="AIEnablr" />
+    <span class="nav-badge">Scale Readiness</span>
+  </a>
+  <a href="https://calendly.com/me-meghagarg" target="_blank" class="nav-cta">Book Free Call →</a>
+</nav>
+
+<!-- ── HERO ─────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <span class="eyebrow-dot"></span>
+      AI Architecture Review &amp; Scale Readiness
+    </div>
+    <h1>
+      You shipped fast.
+      <span class="line-accent">Now let's make</span>
+      <span class="line-warn">it scale.</span>
+    </h1>
+    <p class="hero-sub">
+      Moving fast is a competitive advantage — until it isn't.
+      <strong>Technical debt compounds quietly</strong> — fragile APIs, no auth strategy, untestable logic.
+      We find the cracks before your users or investors do.
+    </p>
+    <div class="hero-actions">
+      <a href="https://calendly.com/me-meghagarg" target="_blank" class="btn-primary">Book a Free Scoping Call →</a>
+      <a href="#services" class="btn-ghost">See Our Services ↓</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── TRUST STRIP ───────────────────────────── -->
+<div class="trust-strip">
+  <div class="trust-item"><span class="trust-icon">✓</span> Architecture Review</div>
+  <div class="trust-item"><span class="trust-icon">✓</span> API Design Audit</div>
+  <div class="trust-item"><span class="trust-icon">✓</span> Security Assessment</div>
+  <div class="trust-item"><span class="trust-icon">✓</span> Scalability Roadmap</div>
+  <div class="trust-item"><span class="trust-icon">✓</span> Hands-on Remediation</div>
+</div>
+
+<!-- ── PROBLEM ───────────────────────────────── -->
+<section class="section">
+  <div class="section-label">The Problem</div>
+  <h2 class="section-title">Speed got you here.<br/>These patterns will stop you.</h2>
+  <p style="color:var(--muted); max-width:560px; font-size:0.95rem; line-height:1.7;">
+    Moving fast optimises for shipping, not for scaling. Here's what we find in almost every rapidly-built codebase we review.
+  </p>
+  <div class="problem-grid reveal">
+    <div class="problem-card">
+      <div class="problem-tag">Architecture</div>
+      <h3>No separation of concerns</h3>
+      <p>Business logic, database calls, and API routes tangled together. Impossible to test, risky to change, painful to scale.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-tag">Security</div>
+      <h3>Authentication gaps</h3>
+      <p>Ad-hoc auth bolted on after the fact. Missing rate limiting, exposed endpoints, and secrets hardcoded in version control.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-tag">Performance</div>
+      <h3>N+1 queries &amp; no caching</h3>
+      <p>Works fine at 100 users. Collapses at 10,000. No query optimisation, no cache layer, no load strategy in sight.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-tag">Reliability</div>
+      <h3>Zero observability</h3>
+      <p>No structured logging, no error tracking, no alerting. You find out something broke when a user emails you — or when it's on Reddit.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-tag">Maintainability</div>
+      <h3>Undocumented everything</h3>
+      <p>No API contracts, no onboarding docs, no explanation of why decisions were made. Every new hire is a liability for months.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-tag">Scalability</div>
+      <h3>Monolithic deployments</h3>
+      <p>One deploy touches everything. Can't scale individual services, can't do zero-downtime deploys, can't isolate failures.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── SERVICES ──────────────────────────────── -->
+<section class="tiers-section" id="services">
+  <div class="section-label">Services</div>
+  <h2 class="section-title">Pick your starting point.</h2>
+  <p style="color:var(--muted); max-width:520px; font-size:0.95rem; line-height:1.7;">
+    Three engagement tiers based on where you are and what's at stake. All engagements start with a free 30-minute scoping call.
+  </p>
+  <div class="tiers-grid">
+
+    <div class="tier-card reveal">
+      <div class="tier-tag">Tier 01 — Async</div>
+      <div class="tier-name">Rapid Architecture Audit</div>
+      <div class="tier-timeline">⟳ 1-week turnaround</div>
+      <p class="tier-desc">Async code review via repo access. We go through your architecture and deliver a written findings report — no fluff, just what's dangerous and what to fix first.</p>
+      <ul class="tier-list">
+        <li>Full architecture risk report</li>
+        <li>Prioritised red flag list</li>
+        <li>Quick-win recommendations</li>
+        <li>1× 30-min debrief call</li>
+      </ul>
+      <div class="tier-best">Best for: Early-stage founders who want to know how bad it is before pitching or scaling.</div>
+      <a href="https://calendly.com/me-meghagarg" target="_blank" class="tier-cta">Get Started →</a>
+    </div>
+
+    <div class="tier-card featured reveal">
+      <div class="tier-badge">Most Popular</div>
+      <div class="tier-tag">Tier 02 — Collaborative</div>
+      <div class="tier-name">Scale Readiness Assessment</div>
+      <div class="tier-timeline">⟳ 2–3 week engagement</div>
+      <p class="tier-desc">Deep-dive assessment across architecture, infrastructure, API design, and security. Includes two live working sessions and a prioritised remediation roadmap with effort estimates.</p>
+      <ul class="tier-list">
+        <li>Full codebase + infra review</li>
+        <li>API design &amp; security audit</li>
+        <li>Prioritised roadmap + effort estimates</li>
+        <li>2× live working sessions</li>
+        <li>Executive summary (investor-ready)</li>
+      </ul>
+      <div class="tier-best">Best for: SMBs preparing for growth, fundraising, or a major product launch.</div>
+      <a href="https://calendly.com/me-meghagarg" target="_blank" class="tier-cta">Book a Scoping Call →</a>
+    </div>
+
+    <div class="tier-card reveal">
+      <div class="tier-tag">Tier 03 — Hands-On</div>
+      <div class="tier-name">Rescue &amp; Remediation</div>
+      <div class="tier-timeline">⟳ 4–8 week engagement</div>
+      <p class="tier-desc">We don't just tell you what's broken — we fix it. Your team works alongside ours to resolve critical issues, refactor high-risk areas, and build a maintainable foundation.</p>
+      <ul class="tier-list">
+        <li>Everything in Scale Readiness</li>
+        <li>Hands-on refactoring &amp; fixes</li>
+        <li>Documentation &amp; runbooks</li>
+        <li>Onboarding kit for new devs</li>
+        <li>Structured handoff session</li>
+      </ul>
+      <div class="tier-best">Best for: Companies already under pressure, approaching a launch, or post-incident.</div>
+      <a href="https://calendly.com/me-meghagarg" target="_blank" class="tier-cta">Talk to Us →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── PROCESS ───────────────────────────────── -->
+<section class="section">
+  <div class="section-label">Process</div>
+  <h2 class="section-title">How it works.</h2>
+  <div class="process-steps reveal">
+    <div class="process-step">
+      <div class="step-num">01</div>
+      <div class="step-title">Free Scoping Call</div>
+      <p class="step-desc">30 minutes. We understand your stack, your timeline, and what's actually keeping you up at night.</p>
+    </div>
+    <div class="process-step">
+      <div class="step-num">02</div>
+      <div class="step-title">Repo Access &amp; Intake</div>
+      <p class="step-desc">You complete a short intake form and grant read-only repo access. No disruption to your team.</p>
+    </div>
+    <div class="process-step">
+      <div class="step-num">03</div>
+      <div class="step-title">Review &amp; Analysis</div>
+      <p class="step-desc">Our team conducts the review. For collaborative tiers, live sessions happen in this phase.</p>
+    </div>
+    <div class="process-step">
+      <div class="step-num">04</div>
+      <div class="step-title">Roadmap Delivery</div>
+      <p class="step-desc">You receive a clear, actionable report with prioritised recommendations and next steps.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── DELIVERABLES ──────────────────────────── -->
+<section class="deliverables-section">
+  <div class="section-label">What You Get</div>
+  <h2 class="section-title">Concrete outputs.<br/>Not another consultant deck.</h2>
+  <div class="deliverables-grid">
+
+    <div class="deliverable-list reveal">
+      <div class="deliverable-item">
+        <div class="d-icon">🏗</div>
+        <div>
+          <div class="d-title">Architecture Risk Report</div>
+          <p class="d-desc">A full breakdown of structural issues, ranked by severity and blast radius. No jargon, just clear diagnosis.</p>
+        </div>
+      </div>
+      <div class="deliverable-item">
+        <div class="d-icon">🗺</div>
+        <div>
+          <div class="d-title">Prioritised Remediation Roadmap</div>
+          <p class="d-desc">Every issue mapped to a sprint-ready task with estimated effort, owner suggestion, and dependency chain.</p>
+        </div>
+      </div>
+      <div class="deliverable-item">
+        <div class="d-icon">🔒</div>
+        <div>
+          <div class="d-title">Security Posture Summary</div>
+          <p class="d-desc">Auth gaps, exposed endpoints, secret management issues, and missing rate limiting — all catalogued.</p>
+        </div>
+      </div>
+      <div class="deliverable-item">
+        <div class="d-icon">📄</div>
+        <div>
+          <div class="d-title">Executive Summary</div>
+          <p class="d-desc">A one-page non-technical summary suitable for investors, boards, or leadership conversations.</p>
+        </div>
+      </div>
+      <div class="deliverable-item">
+        <div class="d-icon">💬</div>
+        <div>
+          <div class="d-title">Debrief Session</div>
+          <p class="d-desc">A structured call to walk through findings, answer questions, and agree on a clear path forward.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-aside reveal">
+      <div class="stats-title">Why this matters now</div>
+      <div class="stat-row">
+        <div class="stat-num">72%</div>
+        <div class="stat-label">of rapidly-built products encounter scaling failures within 18 months of launch</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-num">3–8×</div>
+        <div class="stat-label">more expensive to fix architecture debt after a growth event than before it</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-num">~$40k</div>
+        <div class="stat-label">average cost of a preventable outage for a 20-person SaaS company</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-num">1 week</div>
+        <div class="stat-label">to get your first audit report — less time than your next sprint cycle</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── PIPELINE ──────────────────────────────── -->
+<section class="pipeline-section">
+  <div class="pipeline-card reveal">
+    <div>
+      <h3>After the audit, you're not on your own.</h3>
+      <p>Clients who complete a Scale Readiness Assessment get priority access to AIEnablr and WorkEnablr — our product suite built to give your APIs a voice and surface operational risks before they become problems. <strong>The audit is the beginning, not the end.</strong></p>
+    </div>
+    <a href="https://aienablr.com" class="btn-primary" style="white-space:nowrap;">Explore AIEnablr →</a>
+  </div>
+</section>
+
+<!-- ── FINAL CTA ─────────────────────────────── -->
+<section class="final-cta">
+  <div class="final-cta-inner">
+    <h2>Ready to build for scale?</h2>
+    <p>Book a free 30-minute scoping call. No pitch, no pressure — just an honest conversation about your architecture and where you want to take it.</p>
+    <a href="https://calendly.com/me-meghagarg" target="_blank" class="btn-primary" style="font-size:0.9rem; padding:1.1rem 2.5rem;">
+      Book Your Free Scoping Call →
+    </a>
+    <div class="cta-note">
+      Free call · No obligation · Or reach us at
+      <a href="mailto:contact@aienablr.com">contact@aienablr.com</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ───────────────────────────────── -->
+<section class="contact-section" id="contact">
+  <div class="contact-inner">
+
+    <div class="contact-left reveal">
+      <div class="section-label">Get In Touch</div>
+      <h2>Have a question?<br/><span>Let's talk.</span></h2>
+      <p>Whether you're unsure which tier fits your situation, want to understand what the review covers, or just need a second opinion on your stack — we're happy to have a no-commitment conversation.</p>
+    </div>
+
+    <div class="contact-channels reveal">
+
+      <a href="mailto:contact@aienablr.com" class="contact-channel contact-channel--email">
+        <div class="ch-icon">✉</div>
+        <div class="ch-body">
+          <div class="ch-label">Email Us</div>
+          <div class="ch-value">contact@aienablr.com</div>
+        </div>
+        <span class="ch-arrow">→</span>
+      </a>
+
+      <a href="https://calendly.com/me-meghagarg" target="_blank" class="contact-channel">
+        <div class="ch-icon">📅</div>
+        <div class="ch-body">
+          <div class="ch-label">Book a Call</div>
+          <div class="ch-value">Free 30-min scoping session</div>
+        </div>
+        <span class="ch-arrow">→</span>
+      </a>
+
+      <a href="https://www.linkedin.com/company/aienablr" target="_blank" class="contact-channel">
+        <div class="ch-icon" style="font-family:'DM Mono',monospace; font-size:0.85rem; font-weight:700; color:var(--accent);">in</div>
+        <div class="ch-body">
+          <div class="ch-label">LinkedIn</div>
+          <div class="ch-value">AIEnablr</div>
+        </div>
+        <span class="ch-arrow">→</span>
+      </a>
+
+      <div class="contact-note">We typically respond within one business day</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── FOOTER ────────────────────────────────── -->
+<footer>
+  <a href="https://aienablr.com">
+    <img src="https://aienablr.com/logowithoutTagline.png" alt="AIEnablr" />
+  </a>
+  <p>© 2025 AIEnablr. <a href="https://aienablr.com/privacy.html">Privacy Policy</a> · <a href="#">Terms of Service</a></p>
+</footer>
+
+<script>
+  (function () {
+    var els = document.querySelectorAll('.reveal');
+    // Fallback: if no IntersectionObserver, show everything immediately
+    if (!('IntersectionObserver' in window)) {
+      els.forEach(function(el) { el.classList.add('visible'); });
+      return;
+    }
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    els.forEach(function(el) { io.observe(el); });
+  })();
+</script>
+
+</body>
+</html>
