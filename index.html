@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AIEnablr - AI Consultancy for Modern Teams</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Cabinet+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+  <style>
+    /* ── RESET & ROOT ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:       #05080f;
+      --surface:  #0b1120;
+      --surface2: #101828;
+      --border:   #1c2b3a;
+      --accent:   #0ea5e9;
+      --accent2:  #38bdf8;
+      --glow:     #0ea5e9;
+      --green:    #4ade80;
+      --purple:   #a78bfa;
+      --orange:   #fb923c;
+      --text:     #e2eaf4;
+      --muted:    #5d7a96;
+      --white:    #ffffff;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-weight: 400;
+      line-height: 1.6;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── CUSTOM CURSOR ── */
+    #cursor {
+      width: 12px; height: 12px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed; pointer-events: none; z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: transform 0.1s, width 0.2s, height 0.2s, opacity 0.2s;
+      mix-blend-mode: screen;
+    }
+    #cursor-ring {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(14,165,233,0.5);
+      border-radius: 50%;
+      position: fixed; pointer-events: none; z-index: 9998;
+      transform: translate(-50%,-50%);
+      transition: transform 0.15s ease, width 0.3s, height 0.3s;
+    }
+    body:hover #cursor { opacity: 1; }
+    a:hover ~ #cursor, button:hover ~ #cursor { width: 20px; height: 20px; }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0; opacity: 0.6;
+    }
+
+    /* ── NAV ── */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      padding: 1rem 2rem;
+      background: rgba(5,8,15,0.7);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(14,165,233,0.08);
+      transition: background 0.3s;
+    }
+    .navbar .container { display: flex; align-items: center; justify-content: space-between; max-width: 1300px; margin: 0 auto; }
+    .logo img { height: 30px; filter: brightness(1.1); display: block; }
+    .navbar nav ul { list-style: none; display: flex; gap: 0.2rem; }
+    .navbar nav ul li a {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.78rem; font-weight: 500;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none;
+      padding: 0.4rem 0.75rem; border-radius: 4px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .navbar nav ul li a:hover { color: var(--accent); background: rgba(14,165,233,0.06); }
+    .navbar nav ul li a.nav-latest { color: var(--accent2); }
+    .nav-cta-btn {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: var(--accent); color: #000;
+      font-family: 'Syne', sans-serif; font-size: 0.75rem;
+      font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.55rem 1.25rem; border-radius: 4px;
+      text-decoration: none; transition: all 0.2s; border: none; cursor: none;
+    }
+    .nav-cta-btn:hover { background: #38bdf8; transform: translateY(-1px); box-shadow: 0 6px 24px rgba(14,165,233,0.3); }
+
+    /* ── HERO ── */
+    .hero-section {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 8rem 2rem 5rem;
+      position: relative; overflow: hidden;
+    }
+    #hero-canvas {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      pointer-events: none; z-index: 0;
+    }
+    .hero-glow-orb {
+      position: absolute;
+      border-radius: 50%; filter: blur(120px); pointer-events: none;
+    }
+    .orb-1 { width: 700px; height: 700px; background: rgba(14,165,233,0.07); top: -200px; left: -150px; }
+    .orb-2 { width: 500px; height: 500px; background: rgba(167,139,250,0.05); bottom: -100px; right: -100px; }
+    .hero-content { position: relative; z-index: 1; max-width: 1300px; margin: 0 auto; width: 100%; }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      font-family: 'Syne', sans-serif; font-size: 0.7rem;
+      font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 1.75rem;
+      opacity: 0; animation: slideUp 0.6s ease 0.1s forwards;
+    }
+    .eyebrow-line { width: 28px; height: 1px; background: var(--accent); }
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(3rem, 7vw, 6.5rem);
+      font-weight: 800; line-height: 0.95;
+      letter-spacing: -0.03em; margin-bottom: 2rem;
+      opacity: 0; animation: slideUp 0.7s ease 0.2s forwards;
+    }
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero-sub {
+      font-size: 1.2rem; color: var(--muted); max-width: 560px;
+      line-height: 1.75; margin-bottom: 2.5rem;
+      opacity: 0; animation: slideUp 0.7s ease 0.35s forwards;
+    }
+    .hero-actions {
+      display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;
+      opacity: 0; animation: slideUp 0.7s ease 0.5s forwards;
+    }
+    .btn-hero-primary {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: var(--accent); color: #000;
+      font-family: 'Syne', sans-serif; font-size: 0.85rem;
+      font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 1rem 2.25rem; border-radius: 5px;
+      text-decoration: none; transition: all 0.25s; cursor: none;
+      box-shadow: 0 0 40px rgba(14,165,233,0.25);
+    }
+    .btn-hero-primary:hover { background: #38bdf8; transform: translateY(-3px); box-shadow: 0 12px 40px rgba(14,165,233,0.4); }
+    .btn-hero-ghost {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: transparent; color: var(--text);
+      font-family: 'Syne', sans-serif; font-size: 0.85rem;
+      font-weight: 600; letter-spacing: 0.04em;
+      padding: 1rem 2rem; border-radius: 5px;
+      text-decoration: none; border: 1px solid var(--border); transition: all 0.25s; cursor: none;
+    }
+    .btn-hero-ghost:hover { border-color: var(--accent); color: var(--accent); }
+    .hero-stats {
+      display: flex; gap: 3rem; margin-top: 4rem; flex-wrap: wrap;
+      opacity: 0; animation: slideUp 0.7s ease 0.65s forwards;
+    }
+    .hero-stat-num {
+      font-family: 'Syne', sans-serif; font-size: 2.2rem;
+      font-weight: 800; color: var(--white); line-height: 1;
+    }
+    .hero-stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 0.3rem; }
+    .hero-stat-divider { width: 1px; background: var(--border); align-self: stretch; }
+
+    /* ── TICKER ── */
+    .ticker-wrap {
+      overflow: hidden; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      background: var(--surface); padding: 0.85rem 0; position: relative; z-index: 1;
+    }
+    .ticker-track {
+      display: flex; gap: 3rem; width: max-content;
+      animation: ticker 30s linear infinite;
+    }
+    .ticker-item {
+      display: flex; align-items: center; gap: 0.6rem; white-space: nowrap;
+      font-family: 'Syne', sans-serif; font-size: 0.7rem;
+      font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+    }
+    .ticker-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* ── SCALE READINESS SECTION ── */
+    .scale-section {
+      padding: 8rem 2rem;
+      background: var(--bg);
+      position: relative; overflow: hidden;
+    }
+    .scale-section::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), var(--purple), transparent);
+    }
+    .scale-section::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--purple), var(--accent), transparent);
+    }
+    .scale-bg-grid {
+      position: absolute; inset: 0;
+      background-image: linear-gradient(rgba(14,165,233,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(14,165,233,0.025) 1px, transparent 1px);
+      background-size: 50px 50px;
+      mask-image: radial-gradient(ellipse 70% 80% at 50% 50%, black 20%, transparent 100%);
+    }
+    .scale-glow { position: absolute; width: 800px; height: 800px; background: radial-gradient(circle, rgba(14,165,233,0.06) 0%, transparent 65%); top: 50%; left: 50%; transform: translate(-50%,-50%); pointer-events: none; }
+    .scale-inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
+    .scale-left .section-label { text-align: left; display: block; margin-bottom: 1rem; }
+    .scale-left h2 { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 800; color: var(--white); line-height: 1.1; margin-bottom: 1.25rem; }
+    .scale-left h2 span { background: linear-gradient(135deg, var(--accent), #7dd3fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .scale-left p { color: var(--muted); font-size: 1rem; line-height: 1.8; margin-bottom: 2rem; }
+    .scale-badges { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 2.5rem; }
+    .scale-badge {
+      font-family: 'Syne', sans-serif; font-size: 0.65rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.35rem 0.85rem; border-radius: 20px;
+    }
+    .sb-cyan  { background: rgba(14,165,233,0.1);  color: var(--accent2); border: 1px solid rgba(14,165,233,0.2); }
+    .sb-purple{ background: rgba(167,139,250,0.1); color: var(--purple);  border: 1px solid rgba(167,139,250,0.2); }
+    .sb-green { background: rgba(74,222,128,0.1);  color: var(--green);   border: 1px solid rgba(74,222,128,0.2); }
+    .sb-orange{ background: rgba(251,146,60,0.1);  color: var(--orange);  border: 1px solid rgba(251,146,60,0.2); }
+    .scale-right { display: flex; flex-direction: column; gap: 1rem; }
+    .scale-tier {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.5rem 1.75rem;
+      display: flex; gap: 1.25rem; align-items: flex-start;
+      transition: all 0.3s; cursor: none; position: relative; overflow: hidden;
+    }
+    .scale-tier::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+      background: var(--tier-color, var(--accent)); border-radius: 3px 0 0 3px;
+      transform: scaleY(0); transform-origin: bottom; transition: transform 0.3s;
+    }
+    .scale-tier:hover { border-color: rgba(14,165,233,0.3); transform: translateX(6px); background: var(--surface2); }
+    .scale-tier:hover::before { transform: scaleY(1); }
+    .scale-tier-num {
+      font-family: 'Syne', sans-serif; font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.1em; color: var(--tier-color, var(--accent));
+      background: rgba(14,165,233,0.08); border: 1px solid rgba(14,165,233,0.15);
+      padding: 0.3rem 0.6rem; border-radius: 4px; flex-shrink: 0; margin-top: 0.1rem;
+    }
+    .scale-tier-title { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; color: var(--white); margin-bottom: 0.25rem; }
+    .scale-tier-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+    .scale-tier-time { font-family: monospace; font-size: 0.75rem; color: var(--tier-color, var(--accent)); margin-top: 0.4rem; display: inline-block; }
+
+    /* ── HOW IT WORKS ── */
+    .howitworks-section { padding: 8rem 2rem; background: var(--surface); }
+    .steps-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 2rem; margin-top: 4rem; position: relative; }
+    .steps-row::before {
+      content: ''; position: absolute; top: 3rem; left: 16.6%; right: 16.6%; height: 1px;
+      background: linear-gradient(90deg, var(--accent), var(--purple), var(--accent)); opacity: 0.25;
+    }
+    .step-card {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 2.25rem; text-align: center;
+      transition: all 0.3s; cursor: none;
+    }
+    .step-card:hover { border-color: rgba(14,165,233,0.35); transform: translateY(-5px); box-shadow: 0 16px 50px rgba(14,165,233,0.08); }
+    .step-num-wrap {
+      width: 4.5rem; height: 4.5rem; border-radius: 50%; margin: 0 auto 1.5rem;
+      background: var(--surface); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center; position: relative; z-index: 1;
+    }
+    .step-num { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 800; color: var(--accent); }
+    .step-card h3 { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; }
+    .step-card p { font-size: 0.9rem; color: var(--muted); line-height: 1.7; }
+
+    /* ── FEATURES ── */
+    .features-section { padding: 8rem 2rem; background: var(--bg); }
+    .features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top: 4rem; }
+    .feature-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 2rem;
+      transition: all 0.3s; cursor: none; position: relative; overflow: hidden;
+    }
+    .feature-card::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(14,165,233,0.04), transparent);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .feature-card:hover { border-color: rgba(14,165,233,0.35); transform: translateY(-4px); }
+    .feature-card:hover::after { opacity: 1; }
+    .feature-icon {
+      width: 3rem; height: 3rem; border-radius: 8px; margin-bottom: 1.25rem;
+      background: rgba(14,165,233,0.1); border: 1px solid rgba(14,165,233,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; color: var(--accent); transition: all 0.3s;
+    }
+    .feature-card:hover .feature-icon { background: var(--accent); color: #000; }
+    .feature-card h3 { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--white); margin-bottom: 0.6rem; }
+    .feature-card p { font-size: 0.875rem; color: var(--muted); line-height: 1.7; }
+
+    /* ── USE CASES ── */
+    .use-cases-section { padding: 8rem 2rem; background: var(--surface); }
+    .tabs-wrapper { margin-top: 3rem; }
+    .tab-nav { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; }
+    .tab-btn {
+      font-family: 'Syne', sans-serif; font-size: 0.8rem; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 0.6rem 1.4rem; border-radius: 4px; border: 1px solid var(--border);
+      background: transparent; color: var(--muted); cursor: none; transition: all 0.2s;
+    }
+    .tab-btn.active, .tab-btn:hover { background: rgba(14,165,233,0.1); border-color: var(--accent); color: var(--accent); }
+    .tab-pane { display: none; animation: fadeIn 0.4s ease; }
+    .tab-pane.active { display: block; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+    .tab-pane-inner {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 3rem; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center;
+    }
+    .tab-pane-inner h3 { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; color: var(--white); margin-bottom: 1rem; }
+    .tab-pane-inner p { font-size: 0.95rem; color: var(--muted); line-height: 1.8; }
+    .tab-visual {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+      padding: 2rem; display: flex; flex-direction: column; gap: 0.75rem;
+    }
+    .tab-visual-row {
+      background: var(--surface); border-radius: 6px; padding: 0.85rem 1rem;
+      display: flex; align-items: center; gap: 0.75rem;
+      font-size: 0.8rem; color: var(--muted); border: 1px solid var(--border);
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .tab-visual-row:hover { border-color: rgba(14,165,233,0.3); color: var(--text); }
+    .tab-visual-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ── DEVELOPMENTS ── */
+    .developments-section { padding: 8rem 2rem; background: var(--bg); }
+    .dev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px,1fr)); gap: 1.5rem; margin-top: 4rem; }
+    .dev-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 2rem;
+      display: flex; flex-direction: column; gap: 1rem;
+      transition: all 0.3s; cursor: none;
+    }
+    .dev-card:hover { border-color: rgba(14,165,233,0.35); transform: translateY(-5px); box-shadow: 0 16px 50px rgba(14,165,233,0.08); }
+    .dev-card-meta { display: flex; align-items: center; gap: 0.75rem; }
+    .dev-type {
+      font-family: 'Syne', sans-serif; font-size: 0.6rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 3px 10px; border-radius: 20px;
+    }
+    .type-launch { background: rgba(74,222,128,0.1); color: var(--green); border: 1px solid rgba(74,222,128,0.2); }
+    .type-update { background: rgba(14,165,233,0.1); color: var(--accent2); border: 1px solid rgba(14,165,233,0.2); }
+    .type-blog   { background: rgba(167,139,250,0.1); color: var(--purple); border: 1px solid rgba(167,139,250,0.2); }
+    .dev-date { font-size: 0.75rem; color: var(--muted); font-family: monospace; }
+    .dev-card h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); line-height: 1.4; }
+    .dev-card p { font-size: 0.875rem; color: var(--muted); line-height: 1.7; flex: 1; }
+    .dev-card a { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; color: var(--accent); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: gap 0.2s; }
+    .dev-card a:hover { gap: 12px; }
+
+    /* ── PRICING ── */
+    .pricing-section { padding: 8rem 2rem; background: var(--surface); }
+    .pricing-tiers { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top: 4rem; }
+    .tier-card {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 2.5rem;
+      display: flex; flex-direction: column; gap: 0;
+      transition: all 0.3s; cursor: none; position: relative;
+    }
+    .tier-card:hover { border-color: rgba(14,165,233,0.35); transform: translateY(-5px); box-shadow: 0 20px 60px rgba(14,165,233,0.1); }
+    .tier-card.recommended { border-color: rgba(14,165,233,0.4); background: rgba(14,165,233,0.04); }
+    .recommended-badge {
+      position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+      background: var(--accent); color: #000;
+      font-family: 'Syne', sans-serif; font-size: 0.6rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 20px; white-space: nowrap;
+    }
+    .tier-card h3 { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--white); margin-bottom: 0.5rem; }
+    .tier-price { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--accent); margin-bottom: 1.5rem; }
+    .tier-features { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; flex: 1; }
+    .tier-features li { font-size: 0.875rem; color: var(--muted); display: flex; align-items: center; gap: 0.6rem; }
+    .tier-features li i { color: var(--green); font-size: 0.75rem; }
+    .tier-btn {
+      display: block; text-align: center;
+      font-family: 'Syne', sans-serif; font-size: 0.78rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.85rem; border-radius: 5px;
+      border: 1px solid var(--border); color: var(--text);
+      text-decoration: none; background: transparent; cursor: none;
+      transition: all 0.25s; margin-top: auto;
+    }
+    .tier-card.recommended .tier-btn { background: var(--accent); border-color: var(--accent); color: #000; }
+    .tier-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .tier-card.recommended .tier-btn:hover { background: var(--accent2); color: #000; }
+
+    /* ── FINAL CTA ── */
+    .cta-section {
+      padding: 9rem 2rem; text-align: center;
+      background: var(--bg); position: relative; overflow: hidden;
+    }
+    .cta-glow { position: absolute; width: 1000px; height: 600px; background: radial-gradient(ellipse, rgba(14,165,233,0.06) 0%, transparent 70%); top: 50%; left: 50%; transform: translate(-50%,-50%); pointer-events: none; }
+    .cta-section h2 { font-family: 'Syne', sans-serif; font-size: clamp(2.2rem, 4.5vw, 3.8rem); font-weight: 800; color: var(--white); margin-bottom: 1.25rem; line-height: 1.1; position: relative; z-index: 1; }
+    .cta-section p { font-size: 1.05rem; color: var(--muted); max-width: 500px; margin: 0 auto 2.5rem; position: relative; z-index: 1; }
+    .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; position: relative; z-index: 1; }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2.5rem 2rem; border-top: 1px solid var(--border);
+      background: var(--surface);
+    }
+    footer .container { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    footer p { font-size: 0.78rem; color: var(--muted); }
+    .footer-links { display: flex; gap: 1.5rem; }
+    .footer-links a { font-size: 0.78rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--accent); }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes slideUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes float { 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-12px); } }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+      .navbar nav { display: none; }
+      .hero-stats { gap: 1.5rem; }
+      .scale-inner, .tab-pane-inner { grid-template-columns: 1fr; }
+      .steps-row { grid-template-columns: 1fr; }
+      .steps-row::before { display: none; }
+      .features-grid { grid-template-columns: 1fr 1fr; }
+      .pricing-tiers { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .features-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- CUSTOM CURSOR -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- ── NAV ── -->
+<header class="navbar" id="navbar">
+  <div class="container">
+    <div class="logo">
+      <a href="#"><img src="logowithoutTagline.png" alt="AIEnablr Logo"/></a>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="#scale">What We Do</a></li>
+        <li><a href="#how-it-works">Process</a></li>
+        <li><a href="#use-cases">Use Cases</a></li>
+        <li><a href="#developments" class="nav-latest">Latest</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <a href="https://calendly.com/me-meghagarg" target="_blank" class="nav-cta-btn">Book Free Scoping Call <i class="fas fa-arrow-right"></i></a>
+  </div>
+</header>
+
+<main>
+
+  <!-- ── HERO ── -->
+  <section id="hero" class="hero-section">
+    <canvas id="hero-canvas"></canvas>
+    <div class="hero-glow-orb orb-1"></div>
+    <div class="hero-glow-orb orb-2"></div>
+    <div class="hero-content container">
+      <div class="hero-eyebrow">
+        <span class="eyebrow-line"></span>
+        AI Consultancy by AIEnablr
+      </div>
+      <h1>We help businesses<br/><em>scale</em> with AI.<br/>Intelligently.</h1>
+      <p class="hero-sub">AIEnablr is an AI consultancy. We review your architecture, remediate technical debt, and build operational intelligence tools that help your team scale without breaking.</p>
+      <div class="hero-actions">
+        <a href="scale/index.html" class="btn-hero-primary">Explore Scale Readiness <i class="fas fa-arrow-right"></i></a>
+        <a href="#how-it-works" class="btn-hero-ghost">How It Works <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-num">3</div>
+          <div class="hero-stat-label">Engagement tiers</div>
+        </div>
+        <div class="hero-stat-divider"></div>
+        <div>
+          <div class="hero-stat-num">1wk</div>
+          <div class="hero-stat-label">Fastest audit turnaround</div>
+        </div>
+        <div class="hero-stat-divider"></div>
+        <div>
+          <div class="hero-stat-num">Free</div>
+          <div class="hero-stat-label">30-min scoping call</div>
+        </div>
+        <div class="hero-stat-divider"></div>
+        <div>
+          <div class="hero-stat-num">SOC2</div>
+          <div class="hero-stat-label">Compliance ready</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TICKER ── -->
+  <div class="ticker-wrap">
+    <div class="ticker-track" id="ticker">
+      <span class="ticker-item"><span class="ticker-dot"></span> Architecture Review</span>
+      <span class="ticker-item"><span class="ticker-dot"></span> Scale Readiness</span>
+      <span class="ticker-item"><span class="ticker-dot"></span> Security Audit</span>
+      <span class="ticker-item"><span class="ticker-dot"></span> Ops Intelligence</span>
+      <span class="ticker-item"><span class="ticker-dot"></span> Remediation</span>
+      <span class="ticker-item"><span class="ticker-dot"></span> Bottleneck Detection</span>
+      <span class="ticker-item"><span class="ticker-dot"></span> Team Health</span>
+      <span class="ticker-item"><span class="ticker-dot"></span> Scalability Roadmap</span>
+      <span class="ticker-item"><span class="ticker-dot"></span> Executive Summary</span>
+      <span class="ticker-item"><span class="ticker-dot"></span> Architecture Review</span>
+      <span class="ticker-item"><span class="ticker-dot"></span> Scale Readiness</span>
+      <span class="ticker-item"><span class="ticker-dot"></span> Security Audit</span>
+      <span class="ticker-item"><span class="ticker-dot"></span> Ops Intelligence</span>
+      <span class="ticker-item"><span class="ticker-dot"></span> Remediation</span>
+      <span class="ticker-item"><span class="ticker-dot"></span> Bottleneck Detection</span>
+      <span class="ticker-item"><span class="ticker-dot"></span> Team Health</span>
+      <span class="ticker-item"><span class="ticker-dot"></span> Scalability Roadmap</span>
+      <span class="ticker-item"><span class="ticker-dot"></span> Executive Summary</span>
+    </div>
+  </div>
+
+  <!-- ── SCALE READINESS ── -->
+  <section id="scale" class="scale-section">
+    <div class="scale-bg-grid"></div>
+    <div class="scale-glow"></div>
+    <div class="container">
+      <div class="scale-inner">
+        <div class="scale-left reveal">
+          <span class="section-label">Our Service</span>
+          <h2>You shipped fast.<br/>Now let&#8217;s make it <span>scale.</span></h2>
+          <p>Speed is a competitive advantage &#8212; until technical debt starts compounding. Fragile APIs, auth gaps, zero observability. We find the cracks before your users or investors do, and give you a clear path forward.</p>
+          <div class="scale-badges">
+            <span class="scale-badge sb-cyan">Architecture Review</span>
+            <span class="scale-badge sb-purple">Security Audit</span>
+            <span class="scale-badge sb-green">Scalability Roadmap</span>
+            <span class="scale-badge sb-orange">Hands-on Remediation</span>
+          </div>
+          <a href="scale/index.html" class="btn-hero-primary" style="display:inline-flex;">
+            Explore Scale Readiness <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+        <div class="scale-right reveal">
+
+          <div class="scale-tier" style="--tier-color:#0ea5e9;">
+            <div class="scale-tier-num">01</div>
+            <div>
+              <div class="scale-tier-title">Rapid Architecture Audit</div>
+              <div class="scale-tier-desc">Async code review with a full written risk report and prioritised quick wins. No meetings required until your debrief.</div>
+              <span class="scale-tier-time">&#10227; 1-week turnaround</span>
+            </div>
+          </div>
+
+          <div class="scale-tier" style="--tier-color:#a78bfa;">
+            <div class="scale-tier-num" style="background:rgba(167,139,250,0.08); border-color:rgba(167,139,250,0.15);">02</div>
+            <div>
+              <div class="scale-tier-title">Growth Readiness Review</div>
+              <div class="scale-tier-desc">Deep-dive across architecture, infra, API design, and security. Includes live working sessions and an investor-ready executive summary.</div>
+              <span class="scale-tier-time" style="color:#a78bfa;">&#10227; 2&#8211;3 week engagement</span>
+            </div>
+          </div>
+
+          <div class="scale-tier" style="--tier-color:#4ade80;">
+            <div class="scale-tier-num" style="background:rgba(74,222,128,0.08); border-color:rgba(74,222,128,0.15); color:#4ade80;">03</div>
+            <div>
+              <div class="scale-tier-title">Rescue &amp; Remediation</div>
+              <div class="scale-tier-desc">We don&#8217;t just find the problems &#8212; we fix them. Hands-on refactoring, documentation, and a full team handoff.</div>
+              <span class="scale-tier-time" style="color:#4ade80;">&#10227; 4&#8211;8 week engagement</span>
+            </div>
+          </div>
+
+          <div style="padding:1.25rem 1.75rem; background:rgba(14,165,233,0.05); border:1px solid rgba(14,165,233,0.15); border-radius:8px; font-size:0.82rem; color:var(--muted); display:flex; gap:0.75rem; align-items:center;">
+            <i class="fas fa-calendar-check" style="color:var(--accent); flex-shrink:0;"></i>
+            All engagements start with a <strong style="color:var(--text);">&nbsp;free 30-min scoping call.&nbsp;</strong>
+            <a href="https://calendly.com/me-meghagarg" target="_blank" style="color:var(--accent); text-decoration:none; font-weight:700;">Book on Calendly &rarr;</a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── HOW IT WORKS ── -->
+  <section id="how-it-works" class="howitworks-section">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">How It Works</span>
+        <h2 class="section-title">From scoping call to<br/>scalable foundation.</h2>
+        <p class="section-sub">A clear, low-friction process — whether you need a quick audit or a full remediation.</p>
+      </div>
+      <div class="steps-row">
+        <div class="step-card reveal">
+          <div class="step-num-wrap"><div class="step-num">01</div></div>
+          <h3>Free Scoping Call</h3>
+          <p>30 minutes. We understand your stack, your timeline, and what&#8217;s keeping you up at night — no pitch, no pressure.</p>
+        </div>
+        <div class="step-card reveal">
+          <div class="step-num-wrap"><div class="step-num">02</div></div>
+          <h3>Review &amp; Assessment</h3>
+          <p>We go deep on your architecture, APIs, security posture, and infrastructure — delivering a prioritised risk report with clear next steps.</p>
+        </div>
+        <div class="step-card reveal">
+          <div class="step-num-wrap"><div class="step-num">03</div></div>
+          <h3>Roadmap &amp; Remediation</h3>
+          <p>You receive a concrete, sprint-ready roadmap. For hands-on tiers, we work alongside your team to fix critical issues and hand off cleanly.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FEATURES ── */
+  <section id="features" class="features-section">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">Key Capabilities</span>
+        <h2 class="section-title">Everything you need to go<br/>from fragile to scalable.</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card reveal">
+          <div class="feature-icon"><i class="fas fa-sitemap"></i></div>
+          <h3>Architecture Review</h3>
+          <p>Full codebase and infra analysis. We surface structural issues ranked by severity and blast radius &#8212; no jargon, just clear diagnosis.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+          <h3>Security Posture Audit</h3>
+          <p>Auth gaps, exposed endpoints, secret management, and missing rate limiting &#8212; all catalogued with remediation steps.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon"><i class="fas fa-map-signs"></i></div>
+          <h3>Prioritised Roadmap</h3>
+          <p>Every issue mapped to a sprint-ready task with estimated effort, owner suggestions, and a clear dependency chain.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon"><i class="fas fa-chart-network"></i></div>
+          <h3>Ops Intelligence</h3>
+          <p>We surface bottlenecks, coordination gaps, and execution risks in your team&#8217;s workflows &#8212; before they become outages or missed deadlines.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon"><i class="fas fa-tools"></i></div>
+          <h3>Hands-On Remediation</h3>
+          <p>We don&#8217;t just report. For Tier 3 engagements, your team works alongside ours to refactor, document, and hand off cleanly.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon"><i class="fas fa-file-alt"></i></div>
+          <h3>Executive Summary</h3>
+          <p>A non-technical one-pager suitable for investors, boards, or leadership &#8212; every engagement includes one.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── USE CASES ── -->
+  <section id="use-cases" class="use-cases-section">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">Use Cases</span>
+        <h2 class="section-title">Who we work with.</h2>
+        <p class="section-sub">Our services are built for teams who moved fast and now need to scale smart.</p>
+      </div>
+      <div class="tabs-wrapper reveal">
+        <div class="tab-nav">
+          <button class="tab-btn active" onclick="switchTab(event,'saas')">Founders &amp; Startups</button>
+          <button class="tab-btn" onclick="switchTab(event,'ecom')">SMBs (10&#8211;100 people)</button>
+          <button class="tab-btn" onclick="switchTab(event,'pm')">CTOs &amp; Tech Leads</button>
+        </div>
+        <div id="saas" class="tab-pane active">
+          <div class="tab-pane-inner">
+            <div>
+              <h3>For Founders &amp; Startups</h3>
+              <p>You shipped fast with AI tools and now the codebase feels fragile. Before your next fundraise or growth push, get a clear picture of what&#8217;s risky and what to fix first &#8212; without slowing down your team.</p>
+            </div>
+            <div class="tab-visual">
+              <div class="tab-visual-row"><span class="tab-visual-dot" style="background:#0ea5e9;"></span> 1-week Rapid Architecture Audit</div>
+              <div class="tab-visual-row"><span class="tab-visual-dot" style="background:#a78bfa;"></span> Investor-ready executive summary</div>
+              <div class="tab-visual-row"><span class="tab-visual-dot" style="background:#4ade80;"></span> Prioritised risk report</div>
+              <div class="tab-visual-row"><span class="tab-visual-dot" style="background:#fb923c;"></span> Free 30-min scoping call</div>
+            </div>
+          </div>
+        </div>
+        <div id="ecom" class="tab-pane">
+          <div class="tab-pane-inner">
+            <div>
+              <h3>For SMBs (10&#8211;100 people)</h3>
+              <p>Your product is live and growing, but your team is scared to deploy. New engineers take months to onboard. Scale Readiness uncovers both the technical and coordination blockers holding you back.</p>
+            </div>
+            <div class="tab-visual">
+              <div class="tab-visual-row"><span class="tab-visual-dot" style="background:#0ea5e9;"></span> Scale Readiness Assessment (2&#8211;3 wks)</div>
+              <div class="tab-visual-row"><span class="tab-visual-dot" style="background:#a78bfa;"></span> Bottleneck &amp; coordination gap detection</div>
+              <div class="tab-visual-row"><span class="tab-visual-dot" style="background:#4ade80;"></span> Prioritised risk report</div>
+              <div class="tab-visual-row"><span class="tab-visual-dot" style="background:#fb923c;"></span> Developer onboarding kit</div>
+            </div>
+          </div>
+        </div>
+        <div id="pm" class="tab-pane">
+          <div class="tab-pane-inner">
+            <div>
+              <h3>For CTOs &amp; Tech Leads</h3>
+              <p>You&#8217;ve inherited a codebase or need to present a technical health report to leadership. We give you the language, the diagnosis, and the roadmap &#8212; backed by a full hands-on remediation option if you need it.</p>
+            </div>
+            <div class="tab-visual">
+              <div class="tab-visual-row"><span class="tab-visual-dot" style="background:#0ea5e9;"></span> Full architecture + infra deep-dive</div>
+              <div class="tab-visual-row"><span class="tab-visual-dot" style="background:#a78bfa;"></span> Rescue &amp; Remediation engagement</div>
+              <div class="tab-visual-row"><span class="tab-visual-dot" style="background:#4ade80;"></span> Runbooks &amp; documentation</div>
+              <div class="tab-visual-row"><span class="tab-visual-dot" style="background:#fb923c;"></span> Structured team handoff</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── LATEST DEVELOPMENTS ── -->
+  <section id="developments" class="developments-section">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">Latest</span>
+        <h2 class="section-title">Product updates, launches,<br/>and thinking from AIEnablr.</h2>
+      </div>
+      <div class="dev-grid">
+        <div class="dev-card reveal">
+          <div class="dev-card-meta"><span class="dev-type type-launch">&#128640; Launch</span><span class="dev-date">June 2025</span></div>
+          <h3>Scale Readiness &#8212; New Consultancy Service</h3>
+          <p>Introducing our AI Architecture Review and Scale Readiness service. Three tiers from rapid audit to full hands-on remediation. Free scoping call to start.</p>
+          <a href="scale/index.html">Learn more <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="dev-card reveal">
+          <div class="dev-card-meta"><span class="dev-type type-update">&#9881;&#65039; Update</span><span class="dev-date">May 2025</span></div>
+          <h3>MCP Server Generation v2.0</h3>
+          <p>Faster generation, GraphQL subscriptions support, and a new one-click deploy flow. Spin-up time now under 30 seconds for most API specs.</p>
+          <a href="#">Read changelog <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="dev-card reveal">
+          <div class="dev-card-meta"><span class="dev-type type-blog">&#9999;&#65039; Blog</span><span class="dev-date">April 2025</span></div>
+          <h3>Why Every API Needs a Natural Language Layer</h3>
+          <p>Users don&#8217;t think in endpoints. They think in questions. We explore why adding a conversational interface is no longer a differentiator &#8212; it&#8217;s an expectation.</p>
+          <a href="#">Read article <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="dev-card reveal">
+          <div class="dev-card-meta"><span class="dev-type type-update">&#9881;&#65039; Update</span><span class="dev-date">March 2025</span></div>
+          <h3>Admin Dashboard Redesign</h3>
+          <p>A fully revamped control center with improved API usage analytics, team management, and a new MCP deployment wizard.</p>
+          <a href="#">View what&#8217;s new <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="dev-card reveal">
+          <div class="dev-card-meta"><span class="dev-type type-blog">&#9999;&#65039; Blog</span><span class="dev-date">February 2025</span></div>
+          <h3>The Hidden Cost of Coordination Overhead</h3>
+          <p>As teams grow past 20, coordination complexity grows non-linearly. We break down the financial and human cost &#8212; and what operational intelligence can do about it.</p>
+          <a href="#">Read article <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CONSULTANCY PRICING ── -->
+  <section id="pricing" class="pricing-section">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">Scale Readiness Pricing</span>
+        <h2 class="section-title">Three tiers. One starting point:<br/>a free scoping call.</h2>
+        <p class="section-sub">All engagements begin with a free 30-min call. Pricing confirmed before any work starts.</p>
+      </div>
+      <div class="pricing-tiers">
+
+        <div class="tier-card reveal">
+          <h3>Rapid Architecture Audit</h3>
+          <div class="tier-price" style="font-size:1.6rem;">&euro;1,000 &ndash; &euro;2,000</div>
+          <p style="font-size:0.78rem;color:var(--muted);margin-bottom:1.25rem;">&euro;1k standard &nbsp;&middot;&nbsp; &euro;2k complex (microservices / 4+ devs)</p>
+          <ul class="tier-features">
+            <li><i class="fas fa-check"></i> Architecture risk report</li>
+            <li><i class="fas fa-check"></i> Prioritised red flag list</li>
+            <li><i class="fas fa-check"></i> Quick-win recommendations</li>
+            <li><i class="fas fa-check"></i> 1&times; debrief call</li>
+          </ul>
+          <a href="https://calendly.com/me-meghagarg" target="_blank" class="tier-btn">Book Free Scoping Call</a>
+        </div>
+
+        <div class="tier-card recommended reveal">
+          <div class="recommended-badge">Most Popular</div>
+          <h3>Growth Readiness Review</h3>
+          <div class="tier-price" style="font-size:1.6rem;">&euro;3,000 &ndash; &euro;5,000</div>
+          <p style="font-size:0.78rem;color:var(--muted);margin-bottom:1.25rem;">Final price agreed on scoping call based on complexity</p>
+          <ul class="tier-features">
+            <li><i class="fas fa-check"></i> Full codebase + infra review</li>
+            <li><i class="fas fa-check"></i> API design &amp; security audit</li>
+            <li><i class="fas fa-check"></i> Prioritised roadmap + effort estimates</li>
+            <li><i class="fas fa-check"></i> 2&times; live working sessions</li>
+            <li><i class="fas fa-check"></i> Investor-ready executive summary</li>
+          </ul>
+          <a href="https://calendly.com/me-meghagarg" target="_blank" class="tier-btn">Book Free Scoping Call</a>
+        </div>
+
+        <div class="tier-card reveal">
+          <h3>Rescue &amp; Remediation</h3>
+          <div class="tier-price" style="font-size:1.3rem;">From &euro;12,000</div>
+          <p style="font-size:0.78rem;color:var(--muted);margin-bottom:1.25rem;">Focused Fix &euro;12k &nbsp;&middot;&nbsp; Full Rescue &euro;18k &nbsp;&middot;&nbsp; Enterprise on request</p>
+          <ul class="tier-features">
+            <li><i class="fas fa-check"></i> Everything in Growth Readiness</li>
+            <li><i class="fas fa-check"></i> Hands-on refactoring &amp; fixes</li>
+            <li><i class="fas fa-check"></i> Runbooks &amp; documentation</li>
+            <li><i class="fas fa-check"></i> Developer onboarding kit</li>
+            <li><i class="fas fa-check"></i> Structured team handoff</li>
+          </ul>
+          <a href="https://calendly.com/me-meghagarg" target="_blank" class="tier-btn">Talk to Us</a>
+        </div>
+
+      </div>
+      <p style="text-align:center;font-size:0.82rem;color:var(--muted);margin-top:2rem;">
+        50% deposit on acceptance &middot; 50% on delivery &middot; Questions? <a href="mailto:contact&#64;aienablr.com" style="color:var(--accent);text-decoration:none;">contact&#64;aienablr.com</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ── CTA ── -->
+  <section id="contact" class="cta-section">
+    <div class="cta-glow"></div>
+    <div class="container">
+      <h2 class="reveal">Ready to scale<br/>with confidence?</h2>
+      <p class="reveal">Book a free 30-minute scoping call and get a clear picture of what&#8217;s holding your architecture back &#8212; and exactly how to fix it.</p>
+      <div class="cta-buttons reveal">
+        <a href="https://calendly.com/me-meghagarg" target="_blank" class="btn-hero-primary">Book Free Scoping Call <i class="fas fa-arrow-right"></i></a>
+        <a href="scale/index.html" class="btn-hero-ghost">Explore Scale Readiness</a>
+      </div>
+      <p class="reveal" style="margin-top:1.25rem;font-size:0.82rem;color:var(--muted);">
+        Or email us at <a href="mailto:contact&#64;aienablr.com" style="color:var(--accent);text-decoration:none;">contact&#64;aienablr.com</a>
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2025 AIEnablr. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="scale/index.html">Scale Readiness</a>
+      <a href="mailto:contact&#64;aienablr.com">contact&#64;aienablr.com</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ── CUSTOM CURSOR ──
+  const cur = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cur.style.left = mx + 'px'; cur.style.top = my + 'px'; });
+  (function animRing() {
+    rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  })();
+  document.querySelectorAll('a,button').forEach(el => {
+    el.addEventListener('mouseenter', () => { cur.style.transform = 'translate(-50%,-50%) scale(2)'; ring.style.transform = 'translate(-50%,-50%) scale(1.4)'; });
+    el.addEventListener('mouseleave', () => { cur.style.transform = 'translate(-50%,-50%) scale(1)'; ring.style.transform = 'translate(-50%,-50%) scale(1)'; });
+  });
+
+  // ── HERO PARTICLE CANVAS ──
+  const canvas = document.getElementById('hero-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+  function resizeCanvas() { W = canvas.width = canvas.offsetWidth; H = canvas.height = canvas.offsetHeight; }
+  resizeCanvas(); window.addEventListener('resize', resizeCanvas);
+  for (let i = 0; i < 80; i++) {
+    particles.push({ x: Math.random()*1400, y: Math.random()*800, vx: (Math.random()-0.5)*0.3, vy: (Math.random()-0.5)*0.3, r: Math.random()*1.5+0.5 });
+  }
+  let mouseX = W/2, mouseY = H/2;
+  canvas.closest('section').addEventListener('mousemove', e => {
+    const r = canvas.getBoundingClientRect();
+    mouseX = e.clientX - r.left; mouseY = e.clientY - r.top;
+  });
+  function drawCanvas() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(14,165,233,0.4)'; ctx.fill();
+    });
+    particles.forEach((a, i) => {
+      particles.slice(i+1).forEach(b => {
+        const dx = a.x - b.x, dy = a.y - b.y, d = Math.sqrt(dx*dx+dy*dy);
+        if (d < 130) { ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.strokeStyle = `rgba(14,165,233,${0.06*(1-d/130)})`; ctx.stroke(); }
+      });
+      const dx = a.x - mouseX, dy = a.y - mouseY, d = Math.sqrt(dx*dx+dy*dy);
+      if (d < 180) { ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(mouseX,mouseY); ctx.strokeStyle = `rgba(14,165,233,${0.15*(1-d/180)})`; ctx.stroke(); }
+    });
+    requestAnimationFrame(drawCanvas);
+  }
+  drawCanvas();
+
+  // ── SCROLL REVEAL ──
+  const reveals = document.querySelectorAll('.reveal');
+  const ro = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 70); ro.unobserve(e.target); }
+    });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => ro.observe(el));
+
+  // ── PRODUCT CARD MOUSE GLOW ──
+  document.querySelectorAll('.product-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+      card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+    });
+  });
+
+  // ── TABS ──
+  function switchTab(e, id) {
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    e.currentTarget.classList.add('active');
+  }
+
+  // ── SCALE TIER HOVER COLOR ──
+  document.querySelectorAll('.scale-tier').forEach(t => {
+    t.addEventListener('mouseenter', () => {
+      t.querySelector('.scale-tier-num').style.transform = 'scale(1.1)';
+    });
+    t.addEventListener('mouseleave', () => {
+      t.querySelector('.scale-tier-num').style.transform = 'scale(1)';
+    });
+  });
+
+  // ── NAVBAR SCROLL ──
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').style.background = window.scrollY > 60 ? 'rgba(5,8,15,0.97)' : 'rgba(5,8,15,0.7)';
+  });
+
+  // ── COUNTER ANIMATION ──
+  function animateCounters() {
+    document.querySelectorAll('.hero-stat-num').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(10px)';
+      el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+      setTimeout(() => { el.style.opacity = '1'; el.style.transform = 'none'; }, 800 + Math.random()*400);
+    });
+  }
+  animateCounters();
+</script>
+</body>
+</html>
